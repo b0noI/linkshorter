@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>b0noI</string>
+	<key>Builder Version</key>
+	<string>8536.28.10</string>
+	<key>CFBundleDisplayName</key>
+	<string>shorter</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.b0noi.shorter</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Global Page</key>
+		<string>shorter.html</string>
+		<key>Popovers</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>shorter.html</string>
+				<key>Height</key>
+				<real>125</real>
+				<key>Identifier</key>
+				<string>results</string>
+				<key>Width</key>
+				<real>140</real>
+			</dict>
+		</array>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Command</key>
+				<string>copy</string>
+				<key>Identifier</key>
+				<string>shorter</string>
+				<key>Image</key>
+				<string>128-128.png</string>
+				<key>Include By Default</key>
+				<true/>
+				<key>Label</key>
+				<string>copy-toolbar</string>
+				<key>Popover</key>
+				<string>results</string>
+				<key>Tool Tip</key>
+				<string>copy url</string>
+			</dict>
+		</array>
+	</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict/>
+	</dict>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Level</key>
+			<string>All</string>
+		</dict>
+	</dict>
+	<key>Website</key>
+	<string>http://l.co.ua</string>
+</dict>
+</plist>

@@ -113,5 +113,9 @@ body {
 .form-signin table {
     height: 90px;
     padding: 10px 0 0 0;
+} 
+.navbar-form {
+    margin-right: 10%;
 }
+
 

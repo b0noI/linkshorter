@@ -2,13 +2,13 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Скорочувальник</title>
+    <title>Ужиматель</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/main.css" rel="stylesheet">
 </head>
 <body>
 
@@ -61,22 +61,21 @@
 
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li><a href="index.html">Домівка</a></li>
+                    <li><a href="index.html">Дом</a></li>
                     <li><a href="stat.html">Статистика</a></li>
-                    <li class="active"><a href="rest.html">REST</a></li>
-                 
-                    <li><a href="plugins.html">Плагіни</a></li>
-                       <li><a href="about.html">Про l.co.ua</a></li>
-
+                    <li><a href="rest.html">REST</a></li>
+                    
+              <li><a href="plugins.html">Плагины</a></li>
+              <li class="active"><a href="about.html">Про l.co.ua</a></li>
                 </ul>
 
                 <form class="navbar-form pull-right">
               <div class="nav-collapse collapse">
             <ul class="nav">
               
-              <li><a href="rus/rest.html"><img src="img/ru.png"/> </a></li>
-              <li><a href="rest.html"><img src="img/ua.png"/> </a></li>
-              <li><a href="eng/rest.html"><img src="img/us.png"/> </a></li>
+              <li><a href="about.html"><img src="../img/ru.png"/> </a></li>
+              <li><a href="../about.html"><img src="../img/ua.png"/> </a></li>
+              <li><a href="../eng/about.html"><img src="../img/us.png"/> </a></li>
             </ul>
 
           </div>
@@ -90,59 +89,21 @@
 <div id="wrap">
     <div class="container">
         <div class="form-rest">
-            <h1>REST v. 0.2:</h1>
+            <p class="alert alert-success" align="center">Сокращение URL — возможность, что используется в Интернете для того, чтобы иметь альтернативный краткий URL-адрес для доступа к веб-странице.
+           Каждому URL-адресу присваивается ключ, котрый прибавляется после http://l.co.ua/. Например, http://l.co.ua/m3q2xt имеет ключ m3q2xt.</p>
+            <ol>
+                <li>Viacheslav V. Kovalevskyi - главный разработчик (<a href="http://twitter.com/b0noi">@b0noi</a>)</li>
+                <li>Serhii Kotyk - разработчик расширений для браузеров, web разработчик</li>
+                <li>Oleg Kozlovskyi - Java EE разработчик</li>
+            </ol>
 
-            <h2>post</h2>
-            <ul>
-                <li>
-                    <dl>
-                        <dt>http://l.co.ua/rest/postUrl</dt>
-                        <dd>post long url and get short id</dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt><strike>http://l.co.ua/generateShort</strike></dt>
-                        <dd>post long url and get short id (<b>DEPRICATED</b>)</dd>
-                    </dl>
-                </li>
-            </ul>
-            <h2>get</h2>
-            <ul>
-                <li>
-                    <dl>
-                        <dt>http://l.co.ua/[id]</dt>
-                        <dd>get redirect html to long url with id</dd>
-                    </dl>
-                </li>
-                <li>
-                    <dl>
-                        <dt>http://l.co.ua/rest/statistic/[id]</dt>
-                        <dd>get statistic for id. Statistic is array in JSON format, each field contains information
-                            about: Date, Country and OS
-                        </dd>
-                    </dl>
-                </li>
-            </ul>
-            <hr>
-            <h1>REST v. 0.1:</h1>
 
-            <h2>post</h2>
-            <dl>
-                <dt>http://l.co.ua/generateShort</dt>
-                <dd>post long url and get short id</dd>
-            </dl>
-            <h2>get</h2>
-            <dl>
-                <dt>http://l.co.ua/[id]</dt>
-                <dd>get redirect html to long url with id</dd>
-            </dl>
         </div>
     </div>
 </div>
 <script src="http://code.jquery.com/jquery.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/qrcode.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/qrcode.js"></script>
 <div id="footer">
     <div class="container">
         <div id="left">

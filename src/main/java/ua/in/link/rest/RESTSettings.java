@@ -9,8 +9,6 @@ package ua.in.link.rest;
  */
 public interface RESTSettings {
 
-//    String REST_URL = "http://link-in-ua.j.rsnx.ru";
-
-    String REST_URL = "http://localhost:8080";
+    String REST_URL = "http://link-in-ua.j.rsnx.ru";
 
 }

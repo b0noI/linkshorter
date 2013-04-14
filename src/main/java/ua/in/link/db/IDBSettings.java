@@ -25,8 +25,8 @@ interface IDBSettings {
 
     String SHORT_CODE_FILED_NAME = "short";
 
-    String DB_LOGIN = "linker";
+    String DB_LOGIN = "linker_prod";
 
-    char[] DB_PASSWORD = {'l', 'i', 'n', 'k', 'e', 'r'};
+    char[] DB_PASSWORD = {'t'};
 
 }

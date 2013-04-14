@@ -8,11 +8,10 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * The DB helper.
  * User: b0noI
  * Date: 06.04.13
  * Time: 23:18
- * To change this template use File | Settings | File Templates.
  */
 public class DBHelper {
 
@@ -31,7 +30,7 @@ public class DBHelper {
             mongo = new MongoClient(IDBSettings.DB_URL, IDBSettings.DB_PORT);
             DB db = mongo.getDB(IDBSettings.DB_NAME);
             db.authenticate(IDBSettings.DB_LOGIN, IDBSettings.DB_PASSWORD);
-            urls = db.getCollection(IDBSettings.COLLECTIO_NAME);
+            urls = db.getCollection(IDBSettings.COLLECTION_NAME);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -80,7 +79,7 @@ public class DBHelper {
         List<URL.DataStat> stats = (List<URL.DataStat>)GSON.fromJson((String) c.get(IDBSettings.STATISTIC_FILED_NAME), List.class);
         if (stats == null)
             stats = new ArrayList<>();
-        URL.DataStat statData = new URL.DataStat(new Date(), "", OS);
+        URL.DataStat statData = new URL.DataStat(new Date(), OS);
         stats.add(statData);
         BasicDBObject newObject = new BasicDBObject(c.toMap()).append(IDBSettings.STATISTIC_FILED_NAME, GSON.toJson(stats));
         urls.update(c, newObject);

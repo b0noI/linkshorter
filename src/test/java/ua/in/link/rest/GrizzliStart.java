@@ -1,10 +1,16 @@
 package ua.in.link.rest;
 
 import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
+import com.sun.jersey.api.core.ClassNamesResourceConfig;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
+import org.glassfish.grizzly.http.server.HttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.Request;
+import org.glassfish.grizzly.http.server.Response;
 
+import javax.servlet.ServletRegistration;
 import java.io.IOException;
 import java.net.URI;
 
@@ -16,6 +22,8 @@ import java.net.URI;
  * To change this template use File | Settings | File Templates.
  */
 public class GrizzliStart {
+
+    private static final String JERSEY_SERVLET_CONTEXT_PATH = "ua.in.link.rest.server";
 
     protected static HttpServer startServer() throws IOException {
         System.out.println("Starting grizzly...");

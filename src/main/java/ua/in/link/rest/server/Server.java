@@ -1,15 +1,19 @@
 package ua.in.link.rest.server;
 
 import com.google.gson.Gson;
+import com.sun.jersey.api.core.HttpContext;
 import ua.in.link.db.DBHelper;
 import ua.in.link.db.URL;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.net.MalformedURLException;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * User: b0noI
@@ -33,13 +37,17 @@ public class Server {
             "</head>" +
             "</html>";
 
-    private ServletContext context;
+    private static final String SERVER_IP = "89.253.237.43";
+
+    private static final int WAIT_LIMIT = 60000;
+
+    private static final int COUNT_LIMIT = 100000;
 
     @POST
     @Path("/generateShort")
     @Deprecated
-    public Response generateShortLink(String url) {
-        return postLongUrl(url);
+    public Response generateShortLink(@Context HttpServletRequest request , String url) {
+        return postLongUrl(request, url);
     }
 
     @GET
@@ -51,10 +59,9 @@ public class Server {
 
     @POST
     @Path("/rest/postUrl")
-    public Response postLongUrl(String url, @Context HttpServletRequest httpServletRequest) {
+    public Response postLongUrl(@Context HttpServletRequest request , String url) {
         if (url == null && url.length() < 4)
             return null;
-
         try {
             new java.net.URL(url);
         } catch (MalformedURLException e) {

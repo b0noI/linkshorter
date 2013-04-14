@@ -5,6 +5,7 @@ import ua.in.link.db.DBHelper;
 import ua.in.link.db.URL;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -50,7 +51,7 @@ public class Server {
 
     @POST
     @Path("/rest/postUrl")
-    public Response postLongUrl(String url) {
+    public Response postLongUrl(String url, @Context HttpServletRequest httpServletRequest) {
         if (url == null && url.length() < 4)
             return null;
 

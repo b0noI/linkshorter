@@ -1,16 +1,13 @@
 package ua.in.link.db;
 
-import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
+ * The url class.
  * User: b0noI
  * Date: 06.04.13
  * Time: 23:55
- * To change this template use File | Settings | File Templates.
  */
 public class URL {
 
@@ -52,6 +49,10 @@ public class URL {
         private final String COUNTRY;
 
         private final String OS;
+
+        public DataStat(Date openDate, String os) {
+            this(openDate, "", os);
+        }
 
         public DataStat(Date openDate, String country, String OS) {
             this.OPEN_DATE = openDate;

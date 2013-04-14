@@ -59,7 +59,7 @@ public class Server {
             new java.net.URL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Response.status(500).entity(NOT_VALID_URL).build();
+            return Response.status(500).entity(NOT_VALID_URL).build();
         }
 
         if (!url.contains("http"))

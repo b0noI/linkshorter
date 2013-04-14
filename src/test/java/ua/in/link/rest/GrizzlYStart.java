@@ -6,16 +6,14 @@ import com.sun.jersey.api.core.ResourceConfig;
 import org.glassfish.grizzly.http.server.HttpServer;
 
 import java.io.IOException;
-import java.net.URI;
 
 /**
- * Created with IntelliJ IDEA.
+ * Grizzly http server start.
  * User: b0noI
  * Date: 07.04.13
  * Time: 17:26
- * To change this template use File | Settings | File Templates.
  */
-public class GrizzliStart {
+public class GrizzlyStart {
 
     protected static HttpServer startServer() throws IOException {
         System.out.println("Starting grizzly...");

@@ -11,18 +11,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
 /**
- * Created with IntelliJ IDEA.
+ * Uploader test.
  * User: b0noI
  * Date: 07.04.13
  * Time: 17:07
- * To change this template use File | Settings | File Templates.
  */
 public class UploaderTest {
 
     @Test
     public void testPostUrl() throws Exception {
         String fullUrl = "http://test14.in.ua";
-        String shortUrl = URLClient.postUrl(fullUrl);
+        String shortUrl = URLClient.postUrlToRest(fullUrl);
         assertNotNull(shortUrl);
         URLClient.getFullUrl(shortUrl);
     }
@@ -30,7 +29,7 @@ public class UploaderTest {
     @Test
     public void testGetUrl() throws Exception {
         String fullUrl = "http://dateme.in.ua";
-        String shortUrl = URLClient.postUrl(fullUrl);
+        String shortUrl = URLClient.postUrlToRest(fullUrl);
         String fromServer = URLClient.getFullUrl(shortUrl);
         assertEquals("<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://dateme.in.ua\"></head></html>", fromServer);
     }
@@ -38,7 +37,7 @@ public class UploaderTest {
     @Test
     public void testStat() throws Exception {
         String fullUrl = "http://dateme.in.ua";
-        String shortUrl = URLClient.postUrl(fullUrl);
+        String shortUrl = URLClient.postUrlToRest(fullUrl);
         URLClient.getFullUrl(shortUrl);
         List<URL.DataStat> stat = URLClient.getStat(shortUrl);
         assertNotNull(stat);

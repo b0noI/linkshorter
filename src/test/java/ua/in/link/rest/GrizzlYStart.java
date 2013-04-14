@@ -12,16 +12,14 @@ import org.glassfish.grizzly.http.server.Response;
 
 import javax.servlet.ServletRegistration;
 import java.io.IOException;
-import java.net.URI;
 
 /**
- * Created with IntelliJ IDEA.
+ * Grizzly http server start.
  * User: b0noI
  * Date: 07.04.13
  * Time: 17:26
- * To change this template use File | Settings | File Templates.
  */
-public class GrizzliStart {
+public class GrizzlyStart {
 
     private static final String JERSEY_SERVLET_CONTEXT_PATH = "ua.in.link.rest.server";
 

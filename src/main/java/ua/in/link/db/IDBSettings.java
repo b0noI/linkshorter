@@ -1,11 +1,10 @@
 package ua.in.link.db;
 
 /**
- * Created with IntelliJ IDEA.
+ * DB settings.
  * User: b0noI
  * Date: 07.04.13
  * Time: 16:42
- * To change this template use File | Settings | File Templates.
  */
 interface IDBSettings {
 
@@ -15,7 +14,7 @@ interface IDBSettings {
 
     String DB_NAME = "links";
 
-    String COLLECTIO_NAME = "urls";
+    String COLLECTION_NAME = "urls";
 
     String URL_FILED_NAME = "url";
 

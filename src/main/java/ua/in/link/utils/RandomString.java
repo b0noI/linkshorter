@@ -6,16 +6,19 @@ import java.util.Random;
 
 public class RandomString {
 
-    private static final List<Character> symbols = new ArrayList<>();
+    private static final List<Character> SYMBOLS = new ArrayList<>();
 
     static {
         int idx;
-        for (idx = 0; idx < 10; ++idx)
-            symbols.add((char) ('0' + idx));
-        for (idx = 10; idx < 36; ++idx)
-            symbols.add((char) ('a' + idx - 10));
-        for (int i = (int)'а'; i < (int)'Я'; i++)
-            symbols.add((char)i);
+        for (idx = 0; idx < 10; ++idx) {
+            SYMBOLS.add((char) ('0' + idx));
+        }
+        for (idx = 10; idx < 36; ++idx) {
+            SYMBOLS.add((char) ('a' + idx - 10));
+        }
+        for (int i = 'а'; i < 'Я'; i++) {
+            SYMBOLS.add((char) i);
+        }
     }
 
     private final Random random = new Random();
@@ -32,7 +35,7 @@ public class RandomString {
     public String nextString()
     {
         for (int idx = 0; idx < buf.length; ++idx)
-            buf[idx] = symbols.get(random.nextInt(symbols.size()));
+            buf[idx] = SYMBOLS.get(random.nextInt(SYMBOLS.size()));
         return new String(buf);
     }
 

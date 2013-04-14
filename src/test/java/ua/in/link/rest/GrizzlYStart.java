@@ -19,7 +19,7 @@ import java.io.IOException;
  * Date: 07.04.13
  * Time: 17:26
  */
-public class GrizzlyStart {
+public class GrizzlYStart {
 
     private static final String JERSEY_SERVLET_CONTEXT_PATH = "ua.in.link.rest.server";
 

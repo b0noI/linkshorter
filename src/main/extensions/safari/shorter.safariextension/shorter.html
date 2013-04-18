@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link href="main.css" rel="stylesheet">
+
+    <script src="http://l.co.ua/in/js/qrcode.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        var cache = {};
+
+        function performCommand(event)
+        {
+            var fullUrl = safari.application.activeBrowserWindow.activeTab.url;
+            var url = "";
+            if (cache[fullUrl]) {
+                url = cache[fullUrl];
+            } else {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("POST","http://l.co.ua/rest/postUrl",false);
+                xmlhttp.send(fullUrl);
+                url = "http://l.co.ua/" + xmlhttp.responseText;
+                cache[fullUrl] = url;
+            }
+
+            if (event.command === "copy") {
+                safari.extension.toolbarItems[0].showPopover();
+                document.getElementById('url').value = url;
+                var div = document.getElementById('qr');
+                var qr = qrcode(4, 'M');
+                qr.addData(url);
+                qr.make();
+                div.innerHTML = qr.createImgTag();
+            }
+        }
+
+        safari.application.addEventListener("command", performCommand, true);
+    </script>
+</head>
+<body>
+<input id="url" type="text"/>
+<div id="qr" align="center"/>
+</body>
+</html>

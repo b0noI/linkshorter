@@ -33,7 +33,7 @@
 ###post
 
 l.co.ua/rest/postUrl — post long url and get short id
-l.co.ua/generateShort — post long url and get short id (DEPRICATED)
+l.co.ua/generateShort — post long url and get short id (DEPRECATED)
 
 ###get
 

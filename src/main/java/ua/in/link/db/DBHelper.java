@@ -2,6 +2,7 @@ package ua.in.link.db;
 
 import com.google.gson.Gson;
 import com.mongodb.*;
+import org.junit.Test;
 import ua.in.link.utils.RandomString;
 
 import java.net.UnknownHostException;
@@ -104,14 +105,34 @@ public class DBHelper {
         }
     }
 
+    /**
+     * If tryRandomShortUrl already exists in our DB (count = 1), it's automatically
+     * generate another string, until it would be unique (count != 1).
+     *
+     * @return unique short string URL
+     */
     private String generateNewShort() {
+
+        String uniqueShortUrl = null;
+        String tryRandomShortUrl;
+        DBCursor cursor;
+        boolean UrlAlreadyExist = true;
+
         do {
-            String shortString = RANDOM_STRING.nextString();
-            try(DBCursor c = urls.find(new BasicDBObject(IDBSettings.SHORT_CODE_FILED_NAME, shortString))){
-                if (!c.hasNext())
-                    return shortString;
+            tryRandomShortUrl = RANDOM_STRING.nextString();
+            cursor = urls.find(new BasicDBObject(
+                    IDBSettings.SHORT_CODE_FILED_NAME, tryRandomShortUrl)).limit(1);
+            int count = cursor.count();
+
+            if (count != 1) {
+                uniqueShortUrl = tryRandomShortUrl;
+                UrlAlreadyExist = false;
             }
-        }while (true);
+
+        } while (UrlAlreadyExist);
+
+        return uniqueShortUrl;
+
     }
 
     private static class InstanceHolder {

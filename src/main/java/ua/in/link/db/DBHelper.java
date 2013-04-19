@@ -106,6 +106,10 @@ public class DBHelper {
     }
 
     /**
+     * It's significantly faster to use find() + limit() because findOne()
+     * will always read + return the document if it exists. find() just returns
+     * a cursor (or not) and only reads the data if you iterate through the cursor
+     *
      * If tryRandomShortUrl already exists in our DB (count = 1), it's automatically
      * generate another string, until it would be unique (count != 1).
      *

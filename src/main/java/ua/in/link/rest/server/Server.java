@@ -72,6 +72,9 @@ public class Server {
         if (!url.contains("http"))
             url = "http://" + url;
 
+        if (url.substring(0, 16).toLowerCase().equals("http://l.co.ua/"))
+            return Response.status(201).entity(url).build();
+
         String shortUrl = DBHelper.getInstance().getShortUrl(url).getShortUrl();
         return Response.status(201).entity(shortUrl).build();
     }

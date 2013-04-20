@@ -9,7 +9,29 @@
 
         function performCommand(event)
         {
-            var fullUrl = safari.application.activeBrowserWindow.activeTab.url;
+
+            if (event.command === "copy") {
+                var fullUrl = safari.application.activeBrowserWindow.activeTab.url;
+                var url = getShortUrl(fullUrl);
+                showShortUrl(url);
+            } else if (event.command === "copy-context") {
+                safari.application.activeBrowserWindow.activeTab.page.dispatchMessage('getselection');
+            }
+        }
+
+        function showShortUrl(url) {
+            if (safari.extension.popovers[0].visible)
+                return;
+            safari.extension.toolbarItems[0].showPopover();
+            document.getElementById('url').value = url;
+            var div = document.getElementById('qr');
+            var qr = qrcode(4, 'M');
+            qr.addData(url);
+            qr.make();
+            div.innerHTML = qr.createImgTag();
+        }
+
+        function getShortUrl(fullUrl) {
             var url = "";
             if (cache[fullUrl]) {
                 url = cache[fullUrl];
@@ -20,19 +42,21 @@
                 url = "http://l.co.ua/" + xmlhttp.responseText;
                 cache[fullUrl] = url;
             }
+            return url;
+        }
 
-            if (event.command === "copy") {
-                safari.extension.toolbarItems[0].showPopover();
-                document.getElementById('url').value = url;
-                var div = document.getElementById('qr');
-                var qr = qrcode(4, 'M');
-                qr.addData(url);
-                qr.make();
-                div.innerHTML = qr.createImgTag();
+        function handleMessage(msg) {
+            if (msg.name === 'theselection') {
+                if (msg.message)
+                    showShortUrl(getShortUrl(msg.message));
             }
         }
 
         safari.application.addEventListener("command", performCommand, true);
+        safari.application.addEventListener("copy-selected", performCommand, true);
+        safari.application.addEventListener('message', handleMessage, true);
+        safari.application.activeBrowserWindow.activeTab.addEventListener("message", handleMessage, true);
+        safari.application.activeBrowserWindow.addEventListener("message", handleMessage, true);
     </script>
 </head>
 <body>

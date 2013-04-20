@@ -1,7 +1,7 @@
 package ua.in.link.rest;
 
 import org.junit.Test;
-import ua.in.link.db.URL;
+import ua.in.link.db.URLData;
 import ua.in.link.rest.client.URLClient;
 
 import java.util.List;
@@ -39,9 +39,11 @@ public class UploaderTest {
         String fullUrl = "http://dateme.in.ua";
         String shortUrl = URLClient.postUrlToRest(fullUrl);
         URLClient.getFullUrl(shortUrl);
-        List<URL.DataStat> stat = URLClient.getStat(shortUrl);
+        List<URLData.DataStat> stat = URLClient.getStat(shortUrl);
         assertNotNull(stat);
         assertNotSame(stat.size(), 0);
+        String country = stat.get(stat.size() - 1).getCountry();
+        assertEquals(country.equals(""), false);
     }
 
     @Test

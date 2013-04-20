@@ -2,7 +2,6 @@ package ua.in.link.db;
 
 import com.google.gson.Gson;
 import com.mongodb.*;
-import org.junit.Test;
 import ua.in.link.utils.RandomString;
 
 import java.net.UnknownHostException;
@@ -42,12 +41,12 @@ public class DBHelper {
         return InstanceHolder.getInstance();
     }
 
-    public URL getShortUrl(String fullUrl) {
-        URL urlFromDB = checkFullUrl(fullUrl);
+    public URLData getShortUrl(String fullUrl) {
+        URLData urlFromDB = checkFullUrl(fullUrl);
         if (urlFromDB != null)
             return urlFromDB;
 
-        URL url = new URL(fullUrl, generateNewShort(), new Date(), new ArrayList<URL.DataStat>());
+        URLData url = new URLData(fullUrl, generateNewShort(), new Date(), new ArrayList<URLData.DataStat>());
         BasicDBObject urlDBObject = new BasicDBObject(IDBSettings.URL_FILED_NAME, url.getOriginalUrl()).
                 append(IDBSettings.SHORT_CODE_FILED_NAME, url.getShortUrl()).
                 append(IDBSettings.CREATION_TIME_FILED_NAME, url.getCreationTime().getTime()).
@@ -56,50 +55,50 @@ public class DBHelper {
         return url;
     }
 
-    public URL getFullUrl(String shortUrl) {
+    public URLData getFullUrl(String shortUrl) {
         try(DBCursor c = urls.find(new BasicDBObject(IDBSettings.SHORT_CODE_FILED_NAME, shortUrl))){
             if (!c.hasNext())
                 return null;
             DBObject object = c.next();
             String statJson = (String)object.get(IDBSettings.STATISTIC_FILED_NAME);
 
-            List<URL.DataStat> stat = new ArrayList<>();
+            List<URLData.DataStat> stat = new ArrayList<>();
             if (statJson != null)
                 stat = GSON.fromJson(statJson, List.class);
             Long creationTimeLong = (Long)object.get(IDBSettings.CREATION_TIME_FILED_NAME);
             if (creationTimeLong == null)
                 creationTimeLong = new Date().getTime();
-            return new URL((String)object.get(IDBSettings.URL_FILED_NAME), shortUrl,
+            return new URLData((String)object.get(IDBSettings.URL_FILED_NAME), shortUrl,
                     new Date(creationTimeLong),
                     stat);
         }
     }
 
-    public void incrementStatForURL(URL url, String OS) {
+    public void incrementStatForURL(URLData url, String country, String OS) {
         DBObject c = urls.findOne(new BasicDBObject(IDBSettings.SHORT_CODE_FILED_NAME, url.getShortUrl()));
-        List<URL.DataStat> stats = (List<URL.DataStat>)GSON.fromJson((String) c.get(IDBSettings.STATISTIC_FILED_NAME), List.class);
+        List<URLData.DataStat> stats = (List<URLData.DataStat>)GSON.fromJson((String) c.get(IDBSettings.STATISTIC_FILED_NAME), List.class);
         if (stats == null)
             stats = new ArrayList<>();
-        URL.DataStat statData = new URL.DataStat(new Date(), OS);
+        URLData.DataStat statData = new URLData.DataStat(new Date(), country, OS);
         stats.add(statData);
         BasicDBObject newObject = new BasicDBObject(c.toMap()).append(IDBSettings.STATISTIC_FILED_NAME, GSON.toJson(stats));
         urls.update(c, newObject);
     }
 
-    private URL checkFullUrl(String fullUrl) {
+    private URLData checkFullUrl(String fullUrl) {
         try(DBCursor c = urls.find(new BasicDBObject(IDBSettings.URL_FILED_NAME, fullUrl))){
             if (!c.hasNext())
                 return null;
             DBObject object = c.next();
 
             String statJson = (String)object.get(IDBSettings.STATISTIC_FILED_NAME);
-            List<URL.DataStat> stat = new ArrayList<>();
+            List<URLData.DataStat> stat = new ArrayList<>();
             if (statJson != null)
                 stat = GSON.fromJson(statJson, List.class);
             Long creationTimeLong = (Long)object.get(IDBSettings.CREATION_TIME_FILED_NAME);
             if (creationTimeLong == null)
                 creationTimeLong = new Date().getTime();
-            return new URL(fullUrl, (String)object.get(IDBSettings.SHORT_CODE_FILED_NAME),
+            return new URLData(fullUrl, (String)object.get(IDBSettings.SHORT_CODE_FILED_NAME),
                     new Date(creationTimeLong),
                     stat);
         }
@@ -113,7 +112,7 @@ public class DBHelper {
      * If tryRandomShortUrl already exists in our DB (count = 1), it's automatically
      * generate another string, until it would be unique (count != 1).
      *
-     * @return unique short string URL
+     * @return unique short string URLData
      */
     private String generateNewShort() {
 

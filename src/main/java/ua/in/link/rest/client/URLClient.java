@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import ua.in.link.db.URL;
+import ua.in.link.db.URLData;
 import ua.in.link.rest.RESTSettings;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -56,7 +57,7 @@ public class URLClient {
         return output;
     }
 
-    public static List<URL.DataStat> getStat(String shortUrl){
+    public static List<URLData.DataStat> getStat(String shortUrl){
 
         WebResource webResource = CLIENT
                 .resource(GET_STAT + shortUrl);
@@ -70,7 +71,7 @@ public class URLClient {
         }
 
         String output = response.getEntity(String.class);
-        return GSON.fromJson(output, List.class);
+        return Arrays.asList((URLData.DataStat[])GSON.fromJson(output, URLData.DataStat[].class));
     }
 
     private static String post(String url, String fullUrl){

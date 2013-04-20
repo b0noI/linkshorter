@@ -1,19 +1,18 @@
 package ua.in.link.rest.server;
 
 import com.google.gson.Gson;
-import com.sun.jersey.api.core.HttpContext;
 import ua.in.link.db.DBHelper;
-import ua.in.link.db.URL;
+import ua.in.link.db.URLData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.net.URL;
 
 /**
  * User: b0noI
@@ -26,11 +25,13 @@ public class Server {
 
     private static final Gson GSON = new Gson();
 
-    private static final String NOT_VALID_URL = "URL not valid";
+    private static final String URL_FOR_FETCHING_COUNTRY = "http://api.hostip.info/country.php?ip=";
+
+    private static final String NOT_VALID_URL = "URLData not valid";
 
     private static final String INDEX_URL = "in/index.html";
 
-    private static final String URL_KEY = "###URL###";
+    private static final String URL_KEY = "###URLData###";
 
     private static final String REDIRECT_STRING = "<html>" + "<head>" +
             "<meta HTTP-EQUIV=\"REFRESH\" content=\"0; url="+URL_KEY+"\">" +
@@ -87,7 +88,7 @@ public class Server {
                 || shortUrl.equals("index.html"))
             return REDIRECT_STRING.replace(URL_KEY, INDEX_URL);
 
-        URL url = DBHelper.getInstance().getFullUrl(shortUrl);
+        URLData url = DBHelper.getInstance().getFullUrl(shortUrl);
         if (url == null)
             return null;
         return GSON.toJson(url.getStatistic());
@@ -95,17 +96,44 @@ public class Server {
 
     @GET
     @Path("/{shortUrl}")
-    public String getLongUrl(@PathParam("shortUrl") String shortUrl, @HeaderParam("user-agent") String userAgent) {
+    public String getLongUrl(@PathParam("shortUrl") String shortUrl, @Context HttpServletRequest request) {
 
         if (shortUrl == null || shortUrl.length() < 4
                 || shortUrl.equals("index.html"))
             return REDIRECT_STRING.replace(URL_KEY, INDEX_URL);
 
-        URL url = DBHelper.getInstance().getFullUrl(shortUrl);
+        URLData url = DBHelper.getInstance().getFullUrl(shortUrl);
         if (url == null)
             return null;
-        DBHelper.getInstance().incrementStatForURL(url, userAgent);
+        String IP = request.getRemoteAddr();
+        String countryCode = fetchUrl(URL_FOR_FETCHING_COUNTRY + IP);
+        if (countryCode == null)
+            countryCode = "";
+        DBHelper.getInstance().incrementStatForURL(url, countryCode, request.getHeader("User-Agent"));
         return REDIRECT_STRING.replace(URL_KEY, url.getOriginalUrl());
+    }
+
+    private static String fetchUrl(String strUrl){
+        String output = "";
+        String line = null;
+        try {
+
+            URL url = new URL( strUrl );
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            while ((line = reader.readLine()) != null) {
+                output += line;
+            }
+            reader.close();
+
+        } catch (MalformedURLException e) {
+            System.out.println("ERROR CATCHED: " + e.getMessage());
+            return null;
+        } catch (IOException e) {
+            System.out.println("ERROR CATCHED: " + e.getMessage());
+            return null;
+        }
+
+        return output;
     }
 
 }

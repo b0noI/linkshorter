@@ -9,7 +9,7 @@ import java.util.List;
  * Date: 06.04.13
  * Time: 23:55
  */
-public class URL {
+public class URLData {
 
     private final String ORIGINAL_URL;
 
@@ -19,7 +19,7 @@ public class URL {
 
     private final List<DataStat> STATISTIC;
 
-    URL(String original, String shortUrl, Date creationTime, List<DataStat> statistic) {
+    URLData(String original, String shortUrl, Date creationTime, List<DataStat> statistic) {
         ORIGINAL_URL = original;
         SHORT_URL = shortUrl;
         CREATION_TIME = creationTime;
@@ -50,16 +50,23 @@ public class URL {
 
         private final String OS;
 
-        public DataStat(Date openDate, String os) {
-            this(openDate, "", os);
-        }
-
         public DataStat(Date openDate, String country, String OS) {
             this.OPEN_DATE = openDate;
             this.COUNTRY = country;
             this.OS = OS;
         }
 
+        public Date getOpenDate() {
+            return OPEN_DATE;
+        }
+
+        public String getCountry() {
+            return COUNTRY;
+        }
+
+        public String getOS() {
+            return OS;
+        }
     }
 
 }

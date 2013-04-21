@@ -8,7 +8,7 @@ package ua.in.link.db;
  */
 interface IDBSettings {
 
-    String DB_URL = "mongodb-dateme.j.rsnx.ru";
+    String DB_URL = "localhost";
 
     int DB_PORT = 27017;
 

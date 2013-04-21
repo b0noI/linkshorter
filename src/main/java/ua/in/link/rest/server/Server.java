@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,10 +17,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * User: b0noI
- * Date: 06.04.13
- * Time: 23:10
- * To change this template use File | Settings | File Templates.
+ * User: b0noI Date: 06.04.13 Time: 23:10 To change this template use File |
+ * Settings | File Templates.
  */
 @Path("/")
 public class Server {
@@ -33,10 +33,9 @@ public class Server {
 
     private static final String URL_KEY = "###URLData###";
 
-    private static final String REDIRECT_STRING = "<html>" + "<head>" +
-            "<meta HTTP-EQUIV=\"REFRESH\" content=\"0; url="+URL_KEY+"\">" +
-            "</head>" +
-            "</html>";
+    private static final String REDIRECT_STRING = "<html>" + "<head>"
+            + "<meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=" + URL_KEY
+            + "\">" + "</head>" + "</html>";
 
     private static final String SERVER_IP = "89.253.237.43";
 
@@ -47,7 +46,8 @@ public class Server {
     @POST
     @Path("/generateShort")
     @Deprecated
-    public Response generateShortLink(@Context HttpServletRequest request , String url) {
+    public Response generateShortLink(@Context HttpServletRequest request,
+            String url) {
         return postLongUrl(request, url);
     }
 
@@ -58,10 +58,27 @@ public class Server {
         return REDIRECT_STRING.replace(URL_KEY, INDEX_URL);
     }
 
+    @GET
+    @Path("/rest/ip")
+    public Response persistIPInfo(@Context HttpServletRequest request) {
+        try {
+            DBHelper.getInstance().checkIP(request.getRemoteAddr());
+            return Response.status(201).entity("OK").build();
+        } catch (IllegalAccessException e) {
+            return Response.status(Status.FORBIDDEN).build();
+        }
+    }
+
     @POST
     @Path("/rest/postUrl")
     public Response postLongUrl(@Context HttpServletRequest request , String url) {
-        if (url == null && url.length() < 4)
+        try {
+            DBHelper.getInstance().checkIP(request.getRemoteAddr());
+        } catch (IllegalAccessException e) {
+            return Response.status(Status.FORBIDDEN).entity(e.getMessage()).build();
+        }
+        
+        if (url == null || url.length() < 4)
             return null;
         try {
             new java.net.URL(url);
@@ -77,6 +94,7 @@ public class Server {
             return Response.status(201).entity(url).build();
 
         String shortUrl = DBHelper.getInstance().getShortUrl(url).getShortUrl();
+        
         return Response.status(201).entity(shortUrl).build();
     }
 
@@ -96,7 +114,8 @@ public class Server {
 
     @GET
     @Path("/{shortUrl}")
-    public String getLongUrl(@PathParam("shortUrl") String shortUrl, @Context HttpServletRequest request) {
+    public String getLongUrl(@PathParam("shortUrl") String shortUrl,
+            @Context HttpServletRequest request) {
 
         if (shortUrl == null || shortUrl.length() < 4
                 || shortUrl.equals("index.html"))
@@ -109,17 +128,19 @@ public class Server {
         String countryCode = fetchUrl(URL_FOR_FETCHING_COUNTRY + IP);
         if (countryCode == null)
             countryCode = "";
-        DBHelper.getInstance().incrementStatForURL(url, countryCode, request.getHeader("User-Agent"));
+        DBHelper.getInstance().incrementStatForURL(url, countryCode,
+                request.getHeader("User-Agent"));
         return REDIRECT_STRING.replace(URL_KEY, url.getOriginalUrl());
     }
 
-    private static String fetchUrl(String strUrl){
+    private static String fetchUrl(String strUrl) {
         String output = "";
         String line = null;
         try {
 
-            URL url = new URL( strUrl );
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            URL url = new URL(strUrl);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    url.openStream()));
             while ((line = reader.readLine()) != null) {
                 output += line;
             }

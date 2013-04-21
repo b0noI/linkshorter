@@ -1,11 +1,19 @@
 package ua.in.link.db;
 
+import com.google.code.morphia.Key;
+import com.google.code.morphia.Morphia;
+import com.google.code.morphia.query.UpdateResults;
 import com.google.gson.Gson;
 import com.mongodb.*;
+
+import ua.in.link.db.ip.IPData;
+import ua.in.link.db.ip.IPRepository;
 import ua.in.link.utils.RandomString;
 
 import java.net.UnknownHostException;
 import java.util.*;
+
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  * The DB helper.
@@ -23,6 +31,10 @@ public class DBHelper {
 
     private final DBCollection urls;
 
+    private final Morphia morphia = new Morphia();
+
+    private final IPRepository ipRepository;
+
     private final MongoClient mongo;
 
     private DBHelper() {
@@ -31,6 +43,7 @@ public class DBHelper {
             DB db = mongo.getDB(IDBSettings.DB_NAME);
             db.authenticate(IDBSettings.DB_LOGIN, IDBSettings.DB_PASSWORD);
             urls = db.getCollection(IDBSettings.COLLECTION_NAME);
+            ipRepository = new IPRepository(mongo, morphia, IDBSettings.DB_NAME);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -136,6 +149,53 @@ public class DBHelper {
 
         return uniqueShortUrl;
 
+    }
+
+    public void checkIP(String ip) throws IllegalAccessException {
+      Date now = new Date();
+
+      IPData ipDataByDay = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
+              field("interval").equal(IPData.Interval.DAY).field("date").greaterThanOrEq(DateUtils.addDays(now, -1)));
+      IPData updateIPInterval = updateIPInterval(ipDataByDay, ip, IPData.Interval.DAY, now);
+      checkIPData(updateIPInterval);
+
+      IPData ipDataByHour = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
+              field("interval").equal(IPData.Interval.HOUR).field("date").greaterThanOrEq(DateUtils.addHours(now, -1)));
+      IPData updateIPInterval2 = updateIPInterval(ipDataByHour, ip, IPData.Interval.HOUR, now);
+      checkIPData(updateIPInterval2);
+
+      IPData ipDataByMinute = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
+              field("interval").equal(IPData.Interval.MINUTE).field("date").greaterThanOrEq(DateUtils.addMinutes(now, -1)));
+      IPData updateIPInterval3 = updateIPInterval(ipDataByMinute, ip, IPData.Interval.MINUTE, now);
+      checkIPData(updateIPInterval3);
+
+      IPData ipDataBySecond = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
+              field("interval").equal(IPData.Interval.SECOND).field("date").greaterThanOrEq(DateUtils.addSeconds(now, -1)));
+      IPData updateIPInterval4 = updateIPInterval(ipDataBySecond, ip, IPData.Interval.SECOND, now);
+      checkIPData(updateIPInterval4);
+    }
+
+    private void checkIPData(IPData data) throws IllegalAccessException {
+        if (data.getCount() > data.getInterval().getPermittedNumber()) {
+            throw new IllegalAccessException("Exceeded the "+data.getInterval().name()+" query limit. Expect: " + data.getInterval().getPermittedNumber());
+        }
+
+    }
+
+    private IPData updateIPInterval(IPData data, String ip, IPData.Interval interval, Date date) {
+        if (data == null) {
+            data = new IPData();
+            data.setIp(ip);
+            data.setDate(date);
+            data.setCount(1);
+            data.setInterval(interval);
+            ipRepository.save(data);
+
+            return data;
+        } else {
+            ipRepository.updateFirst(ipRepository.createQuery().field("_id").equal(data.getId()), ipRepository.createUpdateOperations().inc("count", 1));
+            return ipRepository.findOne(ipRepository.createQuery().field("_id").equal(data.getId()));
+        }
     }
 
     private static class InstanceHolder {

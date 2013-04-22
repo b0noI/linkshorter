@@ -1,34 +1,33 @@
-Доброго времени суток, жители Хабра. Так повелось, что я иногда занимаюсь подготовкой кадров для мира программистов. Пытался одно время, помимо очных курсов, записать несколько обучающих видео о Java для самых маленьких (http://java.b0noi.com), но даже треть не закнчил =(. Было решено не выходить за рамки офлайн курсов, однако одну из проблем еще предстояло решить. Как дать слушателям реальный опыт разработки? Еще хотелось бы не просто опыт командной разработки, но и то, что студенты могли бы включить в свое резюме, нечто публичное и, хоть немного, полезное.
+The project was transferred to OpenSource - L.co.ua(«Another» service for shortening links) only under the Web. 
 
-Что хотелось бы видеть в проекте, с которым работают слушатели:
-  * собственно Java с элементами Java EE;
-  * maven;
-  * git/mercurial;
-  * continues integration system;
-  * DB interaction;
-  * JavaScript;
+What I would like to see in the project? 
+  * Java with elements Java EE
+  * maven
+  * git/mercurial
+  * continues integration system
+  * DB interaction
+  * JavaScript
 
-## Реализация
+## Realization, Implementation
 
 ![Img](http://habrastorage.org/storage2/2a5/17f/a49/2a517fa4997beba82fce2c2b12b01fe9.png)
 
-Само собой такой проект может быть, скорее всего, только проектом под Веб. Поразмыслив над тем, что можно быстро создать и передать в OpenSource, с дальнейшей поддержкой, было принято решение сделать «еще один» сервис по сокращению ссылок. Тем более, что в Украине таких не так много, как в мире — было зарегистрировано несколько доменов: l.co.ua и более национальный http://ї.co.ua (этот домен пока еще не работает).
+The project itself is hosted onJelastic'e, but for those who will be doing pushes on server- this information is not became popular. The outer part is writing in JavaScript + BootStrap and behind the scenes workingREST Server, written inJava (jersey). As the database was selected MongoDB.
 
-Сам проект хостится на Jelastic'e, но для тех кто будет делать пуши на сервер эта информация скорее всего не станет востребованной. Внешняя часть написана на JavaScript + BootStrap, а за кулисами трудится REST Server, написанный на Java (jersey). В качестве БД была выбрана MongoDB.
 
-Итак, по факту проект делится на 4 части (будет больше =)): 
-  * REST;
-  * Веб интерфейс, который не более чем еще один клиент для REST;
-  * База данных;
-  * Плагины для бразуеров (сейчас пока сделан только для православного Safari);
+So, in fact the project is divided into 4 parts (to be more =))
+  * REST
+  * Web interface that is nothing more than another client for REST
+  * Database
+  * Browser plug-ins (only for Safari);
 
-Плагин (пока доступен только для Safari) может такое:
+Plug-in (for Safari) can this:
 
 ![Img](http://habrastorage.org/storage2/d4f/74b/8e9/d4f74b8e950300b555e9871c036a74d9.png)
 
 ##REST
 
-Вот короткое описание REST'a v. 0.2:
+Short description REST'a v. 0.2:
 
 ###post
 
@@ -40,12 +39,8 @@ l.co.ua/generateShort — post long url and get short id (DEPRECATED)
 l.co.ua/[id] — get redirect html to long url with id
 l.co.ua/rest/statistic/[id] — get statistic for id. Statistic is array in JSON format, each field contains information about: Date, Country and OS
 
-##Присоединиться
+##Join!
 
-И вот сегодня проект появился на github и каждый может без помех форкнуть его, внести свой вклад и получить заслуженное упоминание на страничке авторов. Начинаю со следующей недели, если все пойдет как запланировано, я со слушателями начну рефактор и оптимизацию проекта, а так же составление детального wiki для того, чтобы быстро влиться.
+On Github everyone can maintain a new fork without noise project, bring the contribution and get a well-deserved mention on the page of the authors.
 
-Но, несмотря на посредственность сервиса сокращения ссылок, есть еще и весьма интересная идея об его монетизации. Но об этом пока история умолчит.
-
-##Анти-троллинг
-
-Раздел для тех, кто вместо разговора по сути начинает менять тему. Я прекрасно понимаю, что можно было что-либо дописать к уже существующим сотням OpenSource проектам и кто-то скажет, что это велосипед, однако на данный момент это именно то, что мне необходимо, так как не исключено, что версию 2.0 уже будем писать совместно со слушателями полностью с нуля, так что вопрос своего проекта все равно бы стоял. Плюс для себя я давно хотел попробовать что-то на jelastic, ибо до этого работал только с Amazon EC2. Есть еще много причин, по которым выбрал именно такой вариант. Тем более, что сделать подобный проект — это 2-4 часа.
+Next will be steeper. There are some interesting ideas about the monetization …

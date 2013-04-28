@@ -25,9 +25,7 @@ public class IPData {
 
     private Date date;
 
-    private int count;
-
-    private Interval interval;
+    private Integer count;
 
     public ObjectId getId() {
         return id;
@@ -53,37 +51,11 @@ public class IPData {
         this.date = date;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
-
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
-        this.interval = interval;
-    }
-
-    public enum Interval {
-        SECOND(3),
-        MINUTE(10),
-        HOUR(30),
-        DAY(100);
-
-        private final long PERMITTED_NUMBER;
-
-        private Interval(long PERMITTED_NUMBER){
-            this.PERMITTED_NUMBER = PERMITTED_NUMBER;
-        }
-
-        public long getPermittedNumber() {
-            return PERMITTED_NUMBER;
-        }
-    }
-
 }

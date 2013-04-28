@@ -2,6 +2,7 @@ package ua.in.link.db;
 
 import com.google.code.morphia.Key;
 import com.google.code.morphia.Morphia;
+import com.google.code.morphia.query.QueryResults;
 import com.google.code.morphia.query.UpdateResults;
 import com.google.gson.Gson;
 import com.mongodb.*;
@@ -152,49 +153,42 @@ public class DBHelper {
     }
 
     public void checkIP(String ip) throws IllegalAccessException {
+
       Date now = new Date();
+      IPData ipData = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).field("date").greaterThanOrEq(DateUtils.addSeconds(now, Interval.SECOND.getInterval_Seconds())));
+      if (ipData == null) {
+          IPData data = new IPData();
+          data.setIp(ip);
+          data.setDate(now);
+          data.setCount(1);
+          ipRepository.save(data);
+      } else {
+          ipRepository.updateFirst(ipRepository.createQuery().field("_id").equal(ipData.getId()), ipRepository.createUpdateOperations().inc("count", 1));
+          IPData updatedIpData = ipRepository.findOne(ipRepository.createQuery().field("_id").equal(ipData.getId()));
+          checkIPData(updatedIpData.getCount(), Interval.SECOND);
+      }
 
-      IPData ipDataByDay = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.DAY).field("date").greaterThanOrEq(DateUtils.addDays(now, -1)));
-      IPData updateIPInterval = updateIPInterval(ipDataByDay, ip, IPData.Interval.DAY, now);
-      checkIPData(updateIPInterval);
+      for(Interval interval: Interval.values()) {
+          if (interval == Interval.SECOND){
+              continue;
+          }
+          List<IPData> asList = ipRepository.find(ipRepository.createQuery().field("ip").equal(ip).field("date").
+                  greaterThanOrEq(DateUtils.addSeconds(now, interval.getInterval_Seconds()))).asList();
 
-      IPData ipDataByHour = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.HOUR).field("date").greaterThanOrEq(DateUtils.addHours(now, -1)));
-      IPData updateIPInterval2 = updateIPInterval(ipDataByHour, ip, IPData.Interval.HOUR, now);
-      checkIPData(updateIPInterval2);
+          //Morphia does not support MongoDB aggregation yet.
+          long count = 0;
 
-      IPData ipDataByMinute = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.MINUTE).field("date").greaterThanOrEq(DateUtils.addMinutes(now, -1)));
-      IPData updateIPInterval3 = updateIPInterval(ipDataByMinute, ip, IPData.Interval.MINUTE, now);
-      checkIPData(updateIPInterval3);
+          for (IPData data : asList) {
+              count += data.getCount();
+          }
 
-      IPData ipDataBySecond = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.SECOND).field("date").greaterThanOrEq(DateUtils.addSeconds(now, -1)));
-      IPData updateIPInterval4 = updateIPInterval(ipDataBySecond, ip, IPData.Interval.SECOND, now);
-      checkIPData(updateIPInterval4);
+          checkIPData(count, interval);
+      }
     }
 
-    private void checkIPData(IPData data) throws IllegalAccessException {
-        if (data.getCount() > data.getInterval().getPermittedNumber()) {
-            throw new IllegalAccessException("Exceeded the "+data.getInterval().name()+" query limit. Expect: " + data.getInterval().getPermittedNumber());
-        }
-
-    }
-
-    private IPData updateIPInterval(IPData data, String ip, IPData.Interval interval, Date date) {
-        if (data == null) {
-            data = new IPData();
-            data.setIp(ip);
-            data.setDate(date);
-            data.setCount(1);
-            data.setInterval(interval);
-            ipRepository.save(data);
-
-            return data;
-        } else {
-            ipRepository.updateFirst(ipRepository.createQuery().field("_id").equal(data.getId()), ipRepository.createUpdateOperations().inc("count", 1));
-            return ipRepository.findOne(ipRepository.createQuery().field("_id").equal(data.getId()));
+    private void checkIPData(long count, Interval interval) throws IllegalAccessException {
+        if (count > interval.getPermittedNumber()) {
+            throw new IllegalAccessException("Exceeded the "+interval.name()+" query limit. Expect: " + interval.getPermittedNumber());
         }
     }
 

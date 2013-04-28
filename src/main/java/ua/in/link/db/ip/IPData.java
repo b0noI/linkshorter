@@ -7,25 +7,48 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.Property;
 import com.google.code.morphia.annotations.Transient;
 
 /**
  *
  * @author odis
- * 
+ *
  */
-@Entity("ips")
+@Entity(IPData.IP_COLLECTION_NAME)
 public class IPData {
+	
+    @Transient
+    public final static String IP_COLLECTION_NAME = "ips";
+    @Transient
+    public final static String IP_FILED_NAME = "ip";
+    @Transient
+    public final static String CREATION_TIME_FILED_NAME = "creationTime";
+    @Transient
+    public final static String REQUEST_COUNT_FILED_NAME = "requestCount";
 
     @Id
     private ObjectId id;
 
     @Indexed
+    @Property(IP_FILED_NAME)
     private String ip;
 
+    @Indexed
+    @Property(CREATION_TIME_FILED_NAME)
     private Date date;
 
+    @Property(REQUEST_COUNT_FILED_NAME)
     private Integer count;
+
+    public IPData() {
+    }
+
+    public IPData(String ip, Date date, Integer count) {
+        this.ip = ip;
+        this.date = date;
+        this.count = count;
+    }
 
     public ObjectId getId() {
         return id;

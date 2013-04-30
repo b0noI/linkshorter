@@ -13,11 +13,10 @@ import com.mongodb.Mongo;
  * @author odis
  *
  */
-public class IPRepository extends BasicDAO<IPData, ObjectId>{
+public class IPRepository extends BasicDAO<IPData, ObjectId> {
 
     public IPRepository(Mongo mongo, Morphia morphia, String dbName) {
         super(mongo, morphia, dbName);
-        // TODO Auto-generated constructor stub
     }
 
 }

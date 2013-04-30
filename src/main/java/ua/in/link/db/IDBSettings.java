@@ -6,23 +6,15 @@ package ua.in.link.db;
  * Date: 07.04.13
  * Time: 16:42
  */
-interface IDBSettings {
+public interface IDBSettings {
 
     String DB_URL = "mongodb-dateme.j.rsnx.ru";
 
     int DB_PORT = 27017;
+    
+    String ID_FIELD_NAME = "_id";
 
     String DB_NAME = "links";
-
-    String COLLECTION_NAME = "urls";
-
-    String URL_FILED_NAME = "url";
-
-    String CREATION_TIME_FILED_NAME = "creation_time";
-
-    String STATISTIC_FILED_NAME = "statistics";
-
-    String SHORT_CODE_FILED_NAME = "short";
 
     String DB_LOGIN = "linker_prod";
 

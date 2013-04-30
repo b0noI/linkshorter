@@ -1,19 +1,21 @@
 package ua.in.link.db;
 
-import com.google.code.morphia.Key;
-import com.google.code.morphia.Morphia;
-import com.google.code.morphia.query.UpdateResults;
-import com.google.gson.Gson;
-import com.mongodb.*;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.time.DateUtils;
 
 import ua.in.link.db.ip.IPData;
 import ua.in.link.db.ip.IPRepository;
-import ua.in.link.utils.RandomString;
 
-import java.net.UnknownHostException;
-import java.util.*;
-
-import org.apache.commons.lang.time.DateUtils;
+import com.google.code.morphia.Morphia;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
 
 /**
  * The DB helper.
@@ -23,17 +25,12 @@ import org.apache.commons.lang.time.DateUtils;
  */
 public class DBHelper {
 
+    private final Lock lock = new ReentrantLock();
     private static final int RANDOM_STRING_LENGTH = 5;
 
-    private static final RandomString RANDOM_STRING = new RandomString(RANDOM_STRING_LENGTH);
-
-    private static final Gson GSON = new Gson();
-
-    private final DBCollection urls;
-
     private final Morphia morphia = new Morphia();
-
     private final IPRepository ipRepository;
+    private final URLRepository urlRepository;
 
     private final MongoClient mongo;
 
@@ -42,16 +39,12 @@ public class DBHelper {
             mongo = new MongoClient(IDBSettings.DB_URL, IDBSettings.DB_PORT);
             DB db = mongo.getDB(IDBSettings.DB_NAME);
             db.authenticate(IDBSettings.DB_LOGIN, IDBSettings.DB_PASSWORD);
-            urls = db.getCollection(IDBSettings.COLLECTION_NAME);
             ipRepository = new IPRepository(mongo, morphia, IDBSettings.DB_NAME);
+            urlRepository = new URLRepository(mongo, morphia, IDBSettings.DB_NAME);
         } catch (UnknownHostException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    public static DBHelper getInstance() {
-        return InstanceHolder.getInstance();
     }
 
     public URLData getShortUrl(String fullUrl) {
@@ -59,142 +52,70 @@ public class DBHelper {
         if (urlFromDB != null)
             return urlFromDB;
 
-        URLData url = new URLData(fullUrl, generateNewShort(), new Date(), new ArrayList<URLData.DataStat>());
-        BasicDBObject urlDBObject = new BasicDBObject(IDBSettings.URL_FILED_NAME, url.getOriginalUrl()).
-                append(IDBSettings.SHORT_CODE_FILED_NAME, url.getShortUrl()).
-                append(IDBSettings.CREATION_TIME_FILED_NAME, url.getCreationTime().getTime()).
-                append(IDBSettings.STATISTIC_FILED_NAME, GSON.toJson(url.getStatistic()));
-        urls.insert(urlDBObject);
-        return url;
-    }
-
-    public URLData getFullUrl(String shortUrl) {
-        try(DBCursor c = urls.find(new BasicDBObject(IDBSettings.SHORT_CODE_FILED_NAME, shortUrl))){
-            if (!c.hasNext())
-                return null;
-            DBObject object = c.next();
-            String statJson = (String)object.get(IDBSettings.STATISTIC_FILED_NAME);
-
-            List<URLData.DataStat> stat = new ArrayList<>();
-            if (statJson != null)
-                stat = GSON.fromJson(statJson, List.class);
-            Long creationTimeLong = (Long)object.get(IDBSettings.CREATION_TIME_FILED_NAME);
-            if (creationTimeLong == null)
-                creationTimeLong = new Date().getTime();
-            return new URLData((String)object.get(IDBSettings.URL_FILED_NAME), shortUrl,
-                    new Date(creationTimeLong),
-                    stat);
+        lock.lock();
+        try {
+            URLData url = new URLData(fullUrl, generateNewShort(), new Date(),
+                    new ArrayList<URLData.DataStat>());
+            urlRepository.save(url);
+            return url;
+        } finally {
+            lock.unlock();
         }
     }
 
     public void incrementStatForURL(URLData url, String country, String OS) {
-        DBObject c = urls.findOne(new BasicDBObject(IDBSettings.SHORT_CODE_FILED_NAME, url.getShortUrl()));
-        List<URLData.DataStat> stats = (List<URLData.DataStat>)GSON.fromJson((String) c.get(IDBSettings.STATISTIC_FILED_NAME), List.class);
-        if (stats == null)
-            stats = new ArrayList<>();
-        URLData.DataStat statData = new URLData.DataStat(new Date(), country, OS);
-        stats.add(statData);
-        BasicDBObject newObject = new BasicDBObject(c.toMap()).append(IDBSettings.STATISTIC_FILED_NAME, GSON.toJson(stats));
-        urls.update(c, newObject);
+        URLData.DataStat value = new URLData.DataStat(new Date(), country, OS);
+        urlRepository.update(urlRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(url.getId()), urlRepository.createUpdateOperations().add(URLData.STATISTIC_FILED_NAME, value));
     }
 
-    private URLData checkFullUrl(String fullUrl) {
-        try(DBCursor c = urls.find(new BasicDBObject(IDBSettings.URL_FILED_NAME, fullUrl))){
-            if (!c.hasNext())
-                return null;
-            DBObject object = c.next();
-
-            String statJson = (String)object.get(IDBSettings.STATISTIC_FILED_NAME);
-            List<URLData.DataStat> stat = new ArrayList<>();
-            if (statJson != null)
-                stat = GSON.fromJson(statJson, List.class);
-            Long creationTimeLong = (Long)object.get(IDBSettings.CREATION_TIME_FILED_NAME);
-            if (creationTimeLong == null)
-                creationTimeLong = new Date().getTime();
-            return new URLData(fullUrl, (String)object.get(IDBSettings.SHORT_CODE_FILED_NAME),
-                    new Date(creationTimeLong),
-                    stat);
-        }
+    public URLData getFullUrl(String shortUrl) {
+        return urlRepository.findOne(URLData.SHORT_CODE_FILED_NAME, shortUrl);
     }
 
-    /**
-     * It's significantly faster to use find() + limit() because findOne()
-     * will always read + return the document if it exists. find() just returns
-     * a cursor (or not) and only reads the data if you iterate through the cursor
-     *
-     * If tryRandomShortUrl already exists in our DB (count = 1), it's automatically
-     * generate another string, until it would be unique (count != 1).
-     *
-     * @return unique short string URLData
-     */
     private String generateNewShort() {
-
-        String uniqueShortUrl = null;
-        String tryRandomShortUrl;
-        DBCursor cursor;
-        boolean UrlAlreadyExist = true;
-
-        do {
-            tryRandomShortUrl = RANDOM_STRING.nextString();
-            cursor = urls.find(new BasicDBObject(
-                    IDBSettings.SHORT_CODE_FILED_NAME, tryRandomShortUrl)).limit(1);
-            int count = cursor.count();
-
-            if (count != 1) {
-                uniqueShortUrl = tryRandomShortUrl;
-                UrlAlreadyExist = false;
-            }
-
-        } while (UrlAlreadyExist);
-
-        return uniqueShortUrl;
-
+        String random = RandomStringUtils.random(RANDOM_STRING_LENGTH, true, true);
+        return urlRepository.count(urlRepository.createQuery().field(URLData.SHORT_CODE_FILED_NAME).equal(random)) > 0 ? generateNewShort() : random;
     }
 
     public void checkIP(String ip) throws IllegalAccessException {
       Date now = new Date();
+      IPData ipData = ipRepository.findOne(ipRepository.createQuery().field(IPData.IP_FILED_NAME).equal(ip).
+              field(IPData.CREATION_TIME_FILED_NAME).greaterThanOrEq(DateUtils.addSeconds(now, Interval.SECOND.getInterval_Seconds())));
+      if (ipData == null) {
+          IPData data = new IPData(ip, now, 1);
+          ipRepository.save(data);
+      } else {
+          ipRepository.updateFirst(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()), ipRepository.createUpdateOperations().inc(IPData.REQUEST_COUNT_FILED_NAME, 1));
+          IPData updatedIpData = ipRepository.findOne(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()));
+          checkIPData(updatedIpData.getCount(), Interval.SECOND);
+      }
 
-      IPData ipDataByDay = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.DAY).field("date").greaterThanOrEq(DateUtils.addDays(now, -1)));
-      IPData updateIPInterval = updateIPInterval(ipDataByDay, ip, IPData.Interval.DAY, now);
-      checkIPData(updateIPInterval);
+      for(Interval interval: Interval.values()) {
+          if (interval == Interval.SECOND){
+              continue;
+          }
+          List<IPData> asList = ipRepository.find(ipRepository.createQuery().field(IPData.IP_FILED_NAME).equal(ip).field(IPData.CREATION_TIME_FILED_NAME).
+                  greaterThanOrEq(DateUtils.addSeconds(now, interval.getInterval_Seconds()))).asList();
 
-      IPData ipDataByHour = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.HOUR).field("date").greaterThanOrEq(DateUtils.addHours(now, -1)));
-      IPData updateIPInterval2 = updateIPInterval(ipDataByHour, ip, IPData.Interval.HOUR, now);
-      checkIPData(updateIPInterval2);
+          //Morphia does not support MongoDB aggregation yet.
+          long count = 0;
 
-      IPData ipDataByMinute = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.MINUTE).field("date").greaterThanOrEq(DateUtils.addMinutes(now, -1)));
-      IPData updateIPInterval3 = updateIPInterval(ipDataByMinute, ip, IPData.Interval.MINUTE, now);
-      checkIPData(updateIPInterval3);
+          for (IPData data : asList) {
+              count += data.getCount();
+          }
 
-      IPData ipDataBySecond = ipRepository.findOne(ipRepository.createQuery().field("ip").equal(ip).
-              field("interval").equal(IPData.Interval.SECOND).field("date").greaterThanOrEq(DateUtils.addSeconds(now, -1)));
-      IPData updateIPInterval4 = updateIPInterval(ipDataBySecond, ip, IPData.Interval.SECOND, now);
-      checkIPData(updateIPInterval4);
+          checkIPData(count, interval);
+      }
     }
 
-    private void checkIPData(IPData data) throws IllegalAccessException {
-        if (data.getCount() > data.getInterval().getPermittedNumber()) {
-            throw new IllegalAccessException("Exceeded the "+data.getInterval().name()+" query limit. Expect: " + data.getInterval().getPermittedNumber());
-        }
 
+    private URLData checkFullUrl(String fullUrl) {
+        return urlRepository.findOne(URLData.URL_FILED_NAME, fullUrl);
     }
 
-    private IPData updateIPInterval(IPData data, String ip, IPData.Interval interval, Date date) {
-        if (data == null) {
-            data = new IPData();
-            data.setIp(ip);
-            data.setDate(date);
-            data.setCount(1);
-            data.setInterval(interval);
-            ipRepository.save(data);
-
-            return data;
-        } else {
-            ipRepository.updateFirst(ipRepository.createQuery().field("_id").equal(data.getId()), ipRepository.createUpdateOperations().inc("count", 1));
-            return ipRepository.findOne(ipRepository.createQuery().field("_id").equal(data.getId()));
+    private void checkIPData(long count, Interval interval) throws IllegalAccessException {
+        if (count > interval.getPermittedNumber()) {
+            throw new IllegalAccessException("Exceeded the "+interval.name()+" query limit. Expect: " + interval.getPermittedNumber());
         }
     }
 
@@ -206,6 +127,10 @@ public class DBHelper {
             return INSTANCE;
         }
 
+    }
+
+    public static DBHelper getInstance() {
+        return InstanceHolder.getInstance();
     }
 
 }

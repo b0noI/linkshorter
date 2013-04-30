@@ -3,70 +3,155 @@ package ua.in.link.db;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
+import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.Property;
+import com.google.code.morphia.annotations.Transient;
+
 /**
  * The url class.
  * User: b0noI
  * Date: 06.04.13
  * Time: 23:55
  */
+@Entity(URLData.IP_COLLECTION_NAME)
 public class URLData {
+	
+	@Transient
+    public final static String IP_COLLECTION_NAME = "urls";
+    @Transient
+    public static final String URL_FILED_NAME = "url";
+    @Transient
+    public static final String CREATION_TIME_FILED_NAME = "creationTime";
+    @Transient
+    public static final String STATISTIC_FILED_NAME = "statistics";
+    @Transient
+    public static final String SHORT_CODE_FILED_NAME = "short";
 
-    private final String ORIGINAL_URL;
+    @Id
+    private ObjectId id;
 
-    private final String SHORT_URL;
+    @Indexed
+    @Property(URL_FILED_NAME)
+    private String originalUrl;
 
-    private final Date CREATION_TIME;
+    @Indexed
+    @Property(SHORT_CODE_FILED_NAME)
+    private String shortUrl;
 
-    private final List<DataStat> STATISTIC;
+    @Property(CREATION_TIME_FILED_NAME)
+    private Date creationTime;
 
-    URLData(String original, String shortUrl, Date creationTime, List<DataStat> statistic) {
-        ORIGINAL_URL = original;
-        SHORT_URL = shortUrl;
-        CREATION_TIME = creationTime;
-        STATISTIC = statistic;
+    @Property(STATISTIC_FILED_NAME)
+    private List<DataStat> statistics;
+
+    public URLData() {
     }
 
-    public List<DataStat> getStatistic() {
-        return STATISTIC;
+    URLData(String original, String shortUrl, Date creationTime, List<DataStat> statistics) {
+        this.originalUrl = original;
+        this.shortUrl = shortUrl;
+        this.creationTime = creationTime;
+        this.statistics = statistics;
+    }
+
+    public ObjectId getId() {
+        return id;
+    }
+
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public String getOriginalUrl() {
-        return ORIGINAL_URL;
+        return originalUrl;
+    }
+
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
     }
 
     public String getShortUrl() {
-        return SHORT_URL;
+        return shortUrl;
+    }
+
+    public void setShortUrl(String shortUrl) {
+        this.shortUrl = shortUrl;
     }
 
     public Date getCreationTime() {
-        return CREATION_TIME;
+        return creationTime;
     }
 
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public List<DataStat> getStatistic() {
+        return statistics;
+    }
+
+    public void setStatistic(List<DataStat> statistics) {
+        this.statistics = statistics;
+    }
+
+    @Embedded
     public static class DataStat {
 
-        private final Date OPEN_DATE;
+        @Transient
+        public static final String OPEN_DATE_FILED_NAME = "openDate";
+        @Transient
+        public static final String COUNTRY_FILED_NAME = "country";
+        @Transient
+        public static final String OS_FILED_NAME = "os";
 
-        private final String COUNTRY;
+        @Indexed
+        private Date openDate;
 
-        private final String OS;
+        @Indexed
+        private String country;
 
-        public DataStat(Date openDate, String country, String OS) {
-            this.OPEN_DATE = openDate;
-            this.COUNTRY = country;
-            this.OS = OS;
+        @Indexed
+        private String os;
+
+        public DataStat() {
+
+        }
+
+        public DataStat(Date openDate, String country, String os) {
+            this.openDate = openDate;
+            this.country = country;
+            this.os = os;
         }
 
         public Date getOpenDate() {
-            return OPEN_DATE;
+            return openDate;
+        }
+
+        public void setOpenDate(Date openDate) {
+            this.openDate = openDate;
         }
 
         public String getCountry() {
-            return COUNTRY;
+            return country;
         }
 
-        public String getOS() {
-            return OS;
+        public void setCountry(String country) {
+            this.country = country;
         }
+
+        public String getOs() {
+            return os;
+        }
+
+        public void setOs(String os) {
+            this.os = os;
+        }
+
     }
 
 }

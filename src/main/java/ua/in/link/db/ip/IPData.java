@@ -7,27 +7,48 @@ import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
+import com.google.code.morphia.annotations.Property;
 import com.google.code.morphia.annotations.Transient;
 
 /**
  *
  * @author odis
- * 
+ *
  */
-@Entity("ips")
+@Entity(IPData.IP_COLLECTION_NAME)
 public class IPData {
+	
+    @Transient
+    public final static String IP_COLLECTION_NAME = "ips";
+    @Transient
+    public final static String IP_FILED_NAME = "ip";
+    @Transient
+    public final static String CREATION_TIME_FILED_NAME = "creationTime";
+    @Transient
+    public final static String REQUEST_COUNT_FILED_NAME = "requestCount";
 
     @Id
     private ObjectId id;
 
     @Indexed
+    @Property(IP_FILED_NAME)
     private String ip;
 
+    @Indexed
+    @Property(CREATION_TIME_FILED_NAME)
     private Date date;
 
-    private int count;
+    @Property(REQUEST_COUNT_FILED_NAME)
+    private Integer count;
 
-    private Interval interval;
+    public IPData() {
+    }
+
+    public IPData(String ip, Date date, Integer count) {
+        this.ip = ip;
+        this.date = date;
+        this.count = count;
+    }
 
     public ObjectId getId() {
         return id;
@@ -53,37 +74,11 @@ public class IPData {
         this.date = date;
     }
 
-    public int getCount() {
+    public Integer getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(Integer count) {
         this.count = count;
     }
-
-    public Interval getInterval() {
-        return interval;
-    }
-
-    public void setInterval(Interval interval) {
-        this.interval = interval;
-    }
-
-    public enum Interval {
-        SECOND(3),
-        MINUTE(10),
-        HOUR(30),
-        DAY(100);
-
-        private final long PERMITTED_NUMBER;
-
-        private Interval(long PERMITTED_NUMBER){
-            this.PERMITTED_NUMBER = PERMITTED_NUMBER;
-        }
-
-        public long getPermittedNumber() {
-            return PERMITTED_NUMBER;
-        }
-    }
-
 }

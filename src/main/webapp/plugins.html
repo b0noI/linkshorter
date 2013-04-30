@@ -10,6 +10,7 @@
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/langugae.js"></script>
 </head>
 <body>
 <script type="text/javascript">
@@ -61,34 +62,6 @@
 
 
     }
-</script>
-
-<script type="text/javascript">
-    $(function () {
-        $(".eng").hide();
-        $(".rus").hide();
-
-        $("#eng").click(function () {
-            $(".eng").show();
-            $(".ukr").hide();
-            $(".rus").hide();
-            document.title = 'Shorter';
-        });
-
-        $("#rus").click(function () {
-            $(".eng").hide();
-            $(".ukr").hide();
-            $(".rus").show();
-            document.title = 'Ужиматель';
-        });
-
-        $("#ukr").click(function () {
-            $(".eng").hide();
-            $(".ukr").show();
-            $(".rus").hide();
-            document.title = 'Скорочувальник';
-        });
-    });
 </script>
 
 <div class="navbar navbar-inverse navbar-fixed-top">

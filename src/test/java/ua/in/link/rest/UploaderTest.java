@@ -6,9 +6,7 @@ import ua.in.link.rest.client.URLClient;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.*;
 
 /**
  * Uploader test.
@@ -20,7 +18,7 @@ public class UploaderTest {
 
     @Test
     public void testPostUrl() throws Exception {
-        String fullUrl = "http://test14.in.ua";
+        String fullUrl = "http://test144.in.ua";
         String shortUrl = URLClient.postUrlToRest(fullUrl);
         assertNotNull(shortUrl);
         URLClient.getFullUrl(shortUrl);
@@ -28,7 +26,7 @@ public class UploaderTest {
 
     @Test
     public void testGetUrl() throws Exception {
-        String fullUrl = "http://dateme.in.ua";
+        String fullUrl = "http://dateme222.in.ua";
         String shortUrl = URLClient.postUrlToRest(fullUrl);
         String fromServer = URLClient.getFullUrl(shortUrl);
         assertEquals("<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://dateme.in.ua\"></head></html>", fromServer);
@@ -36,7 +34,7 @@ public class UploaderTest {
 
     @Test
     public void testStat() throws Exception {
-        String fullUrl = "http://dateme.in.ua";
+        String fullUrl = "http://dateme222.in.ua";
         String shortUrl = URLClient.postUrlToRest(fullUrl);
         URLClient.getFullUrl(shortUrl);
         List<URLData.DataStat> stat = URLClient.getStat(shortUrl);
@@ -48,7 +46,7 @@ public class UploaderTest {
 
     @Test
     public void testPostNEWUrl() throws Exception {
-        String fullUrl = "http://test14.in.ua";
+        String fullUrl = "http://test14444.in.ua";
         String shortUrl = URLClient.postUrlToRest(fullUrl);
         assertNotNull(shortUrl);
         URLClient.getFullUrl(shortUrl);

@@ -131,7 +131,65 @@
 <div id="wrap">
     <div class="container">
         <div class="form-rest">
-            <h1>REST v. 0.2:</h1>
+            <h1>REST v. 0.2.1:</h1>
+
+            <h2>post</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/rest/postUrl</dt>
+                        <dd>post long url and get short id</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><strike>http://l.co.ua/generateShort</strike></dt>
+                        <dd>post long url and get short id (<b>DEPRECATED</b>)</dd>
+                    </dl>
+                </li>
+            </ul>
+            <h2>get</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/[id]</dt>
+                        <dd>get redirect html to long url with id</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/rest/statistic/[id]</dt>
+                        <dd>get statistic for id. Statistic is array in JSON format, each field contains information
+                            about: Date, Country and OS
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+            <h2>limits</h2>
+            <ul>
+                <li>
+                    <dl>
+                        max 3 per second;
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        max 20 per minute;
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        max 30 per hour;
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        max 100 per day.
+                    </dl>
+                </li>
+            </ul>
+            <hr>
+            <h1><strike>REST v. 0.2</strike> (@DEPRECATED):</h1>
 
             <h2>post</h2>
             <ul>

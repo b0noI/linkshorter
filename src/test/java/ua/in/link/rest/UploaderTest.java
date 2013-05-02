@@ -16,6 +16,8 @@ import static org.junit.Assert.*;
  */
 public class UploaderTest extends BaseRestTest{
 
+    private static final String SHORT_KEY_1_0_VERSION = "5t9a2";
+
     @Test
     public void testPostUrl() throws Exception {
         String fullUrl = "http://test144.in.ua";
@@ -50,6 +52,12 @@ public class UploaderTest extends BaseRestTest{
         String shortUrl = URLClient.postUrlToRest(fullUrl);
         assertNotNull(shortUrl);
         URLClient.getFullUrl(shortUrl);
+    }
+
+    @Test
+    public void checkCorrectWorkWithLinksFrom1_0() throws Exception {
+        String fromServer = URLClient.getFullUrl(SHORT_KEY_1_0_VERSION);
+        assertEquals("<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://marketingbuzz.info/pismo-google-pro-iskusstvennye-vxodyashhie-ssylki-celevaya-rassylka-ili-provokaciya-eksperiment.html\"></head></html>", fromServer);
     }
 
 }

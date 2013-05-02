@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.mongodb.MongoException;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.time.DateUtils;
 
@@ -67,7 +68,12 @@ public class DBHelper {
 
     public void incrementStatForURL(URLData url, String country, String OS) {
         URLData.DataStat value = new URLData.DataStat(new Date(), country, OS);
-        urlRepository.update(urlRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(url.getId()), urlRepository.createUpdateOperations().add(URLData.STATISTIC_FILED_NAME, value));
+        try {
+            urlRepository.update(urlRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(url.getId()), urlRepository.createUpdateOperations().add(URLData.STATISTIC_FILED_NAME, value));
+        } catch (MongoException e) {
+            // This exception is throwing on old links (version 1.0)
+            e.printStackTrace();
+        }
     }
 
     public URLData getFullUrl(String shortUrl) {

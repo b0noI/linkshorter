@@ -37,12 +37,6 @@ public class Server {
             + "<meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=" + URL_KEY
             + "\">" + "</head>" + "</html>";
 
-    private static final String SERVER_IP = "89.253.237.43";
-
-    private static final int WAIT_LIMIT = 60000;
-
-    private static final int COUNT_LIMIT = 100000;
-
     @POST
     @Path("/generateShort")
     @Deprecated

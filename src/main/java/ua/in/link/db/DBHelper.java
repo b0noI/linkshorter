@@ -25,6 +25,8 @@ import com.mongodb.MongoClient;
  */
 public class DBHelper {
 
+    private static final String SERVER_IP = "89.253.237.43";
+
     private final Lock lock = new ReentrantLock();
     private static final int RANDOM_STRING_LENGTH = 5;
 
@@ -87,7 +89,8 @@ public class DBHelper {
       } else {
           ipRepository.updateFirst(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()), ipRepository.createUpdateOperations().inc(IPData.REQUEST_COUNT_FILED_NAME, 1));
           IPData updatedIpData = ipRepository.findOne(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()));
-          checkIPData(updatedIpData.getCount(), Interval.SECOND);
+          if (!ip.equals(SERVER_IP))
+            checkIPData(updatedIpData.getCount(), Interval.SECOND);
       }
 
       for(Interval interval: Interval.values()) {

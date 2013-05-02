@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  * Date: 07.04.13
  * Time: 17:07
  */
-public class UploaderTest {
+public class UploaderTest extends BaseRestTest{
 
     @Test
     public void testPostUrl() throws Exception {

@@ -6,13 +6,11 @@ import ua.in.link.rest.client.URLClient;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Created with IntelliJ IDEA.
  * User: b0noI
  * Date: 01.05.13
  * Time: 23:14
- * To change this template use File | Settings | File Templates.
  */
-public class LimitsTest {
+public class LimitsTest extends BaseRestTest{
 
     @Test
     public void testLimitsUpload() throws Exception{

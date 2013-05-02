@@ -23,13 +23,13 @@ public class URLClient {
 
     private static final Gson GSON = new Gson();
 
-    private static final String POST_URL = RESTSettings.REST_URL + "/generateShort";
+    private static final String POST_URL = RESTSettings.getRestUrl() + "/generateShort";
 
-    private static final String POST_NEW_URL = RESTSettings.REST_URL + "/rest/postUrl";
+    private static final String POST_NEW_URL = RESTSettings.getRestUrl() + "/rest/postUrl";
 
-    private static final String GET_URL = RESTSettings.REST_URL + "/";
+    private static final String GET_URL = RESTSettings.getRestUrl() + "/";
 
-    private static final String GET_STAT = RESTSettings.REST_URL + "/rest/statistic/";
+    private static final String GET_STAT = RESTSettings.getRestUrl() + "/rest/statistic/";
 
     @Deprecated
     public static String postUrl(String fullUrl){

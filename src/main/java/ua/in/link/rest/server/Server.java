@@ -31,6 +31,8 @@ public class Server {
 
     private static final String INDEX_URL = "in/index.html";
 
+    private static final String PASSWORD_URL = "in/password.html";
+
     private static final String URL_KEY = "###URLData###";
 
     private static final String REDIRECT_STRING = "<html>" + "<head>"
@@ -116,6 +118,10 @@ public class Server {
             return REDIRECT_STRING.replace(URL_KEY, INDEX_URL);
 
         URLData url = DBHelper.getInstance().getFullUrl(shortUrl);
+
+        if (!url.getPassword().equals(null)) {
+            return REDIRECT_STRING.replace(URL_KEY, PASSWORD_URL);
+        }
         if (url == null)
             return null;
         String IP = request.getRemoteAddr();
@@ -126,6 +132,35 @@ public class Server {
                 request.getHeader("User-Agent"));
         return REDIRECT_STRING.replace(URL_KEY, url.getOriginalUrl());
     }
+
+    @GET
+    @Path("/{shortUrl}/{password}")
+    public String getPassworedUrl(@PathParam("shortUrl") String shortUrl,
+                                  @PathParam("password") String password,
+                                  @Context HttpServletRequest request) {
+
+        if (shortUrl == null || shortUrl.length() < 4
+                || shortUrl.equals("index.html"))
+            return null;
+
+        URLData url = DBHelper.getInstance().getFullUrl(shortUrl);
+
+        if (url == null)
+            return null;
+
+        if (!url.getPassword().equals(null) && url.getPassword().equals(password)) {
+
+            String IP = request.getRemoteAddr();
+            String countryCode = fetchUrl(URL_FOR_FETCHING_COUNTRY + IP);
+            if (countryCode == null)
+                countryCode = "";
+            DBHelper.getInstance().incrementStatForURL(url, countryCode,
+                    request.getHeader("User-Agent"));
+            return REDIRECT_STRING.replace(URL_KEY, url.getOriginalUrl());
+        }else{
+            return REDIRECT_STRING.replace(URL_KEY, PASSWORD_URL);
+        }
+   }
 
     private static String fetchUrl(String strUrl) {
         String output = "";

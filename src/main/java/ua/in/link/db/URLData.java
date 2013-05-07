@@ -31,6 +31,8 @@ public class URLData {
     public static final String STATISTIC_FILED_NAME = "statistics";
     @Transient
     public static final String SHORT_CODE_FILED_NAME = "short";
+    @Transient
+    public static final String PASSWORD_FIELD_NAME = "password";
 
     @Id
     private ObjectId id;
@@ -48,6 +50,9 @@ public class URLData {
 
     @Property(STATISTIC_FILED_NAME)
     private List<DataStat> statistics;
+
+    @Property(PASSWORD_FIELD_NAME)
+    private String password = null;
 
     public URLData() {
     }
@@ -98,6 +103,15 @@ public class URLData {
     public void setStatistic(List<DataStat> statistics) {
         this.statistics = statistics;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 
     @Embedded
     public static class DataStat {

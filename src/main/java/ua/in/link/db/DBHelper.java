@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
 import com.mongodb.MongoException;
 import org.apache.commons.lang.RandomStringUtils;
@@ -26,16 +27,29 @@ import com.mongodb.MongoClient;
  */
 public class DBHelper {
 
-    private static final String SERVER_IP = "89.253.237.43";
+    private static final    String          SERVER_IP               = "89.253.237.43";
 
-    private final Lock lock = new ReentrantLock();
-    private static final int RANDOM_STRING_LENGTH = 5;
+    private static final    String          LOCAL_HOST_STR          = "localhost";
 
-    private final Morphia morphia = new Morphia();
-    private final IPRepository ipRepository;
-    private final URLRepository urlRepository;
+    private static final    String          LOCAL_HOST_IP           = "127.0.0.1";
 
-    private final MongoClient mongo;
+    private static final    int             RANDOM_STRING_LENGTH    = 5;
+
+    private static final    String          LOGGER_NAME             = "ErverLogger";
+
+    private static final    Logger          LOGGER                  = Logger.getLogger(LOGGER_NAME);
+
+    private        final    Lock            lock                    = new ReentrantLock();
+
+    private        final    Morphia         morphia                 = new Morphia();
+
+    private        final    IPRepository    ipRepository;
+
+    private        final    URLRepository   urlRepository;
+
+    private        final    MongoClient     mongo;
+
+    private                 boolean         ignoreLocalHost         = false;
 
     private DBHelper() {
         try {
@@ -86,37 +100,59 @@ public class DBHelper {
     }
 
     public void checkIP(String ip) throws IllegalAccessException {
-      Date now = new Date();
-      IPData ipData = ipRepository.findOne(ipRepository.createQuery().field(IPData.IP_FILED_NAME).equal(ip).
-              field(IPData.CREATION_TIME_FILED_NAME).greaterThanOrEq(DateUtils.addSeconds(now, Interval.SECOND.getInterval_Seconds())));
-      if (ipData == null) {
-          IPData data = new IPData(ip, now, 1);
-          ipRepository.save(data);
-      } else {
-          ipRepository.updateFirst(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()), ipRepository.createUpdateOperations().inc(IPData.REQUEST_COUNT_FILED_NAME, 1));
-          IPData updatedIpData = ipRepository.findOne(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()));
-          if (!ip.equals(SERVER_IP))
-            checkIPData(updatedIpData.getCount(), Interval.SECOND);
-      }
+        Date now = new Date();
+        IPData ipData = ipRepository.findOne(ipRepository.createQuery().field(IPData.IP_FILED_NAME).equal(ip).
+                field(IPData.CREATION_TIME_FILED_NAME).greaterThanOrEq(DateUtils.addSeconds(now, Interval.SECOND.getInterval_Seconds())));
+        if (ipData == null) {
+            IPData data = new IPData(ip, now, 1);
+            ipRepository.save(data);
+        } else {
+            ipRepository.updateFirst(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()), ipRepository.createUpdateOperations().inc(IPData.REQUEST_COUNT_FILED_NAME, 1));
+            IPData updatedIpData = ipRepository.findOne(ipRepository.createQuery().field(IDBSettings.ID_FIELD_NAME).equal(ipData.getId()));
+            if (!ignoreLocalHost && !isRequestFromServer(ip)) {
+                try {
+                    checkIPData(updatedIpData.getCount(), Interval.SECOND);
+                } catch (IllegalAccessException e) {
+                    LOGGER.info("IP limits exception: " + ip);
+                    throw e;
+                }
+            }
+        }
 
-      for(Interval interval: Interval.values()) {
-          if (interval == Interval.SECOND){
-              continue;
-          }
-          List<IPData> asList = ipRepository.find(ipRepository.createQuery().field(IPData.IP_FILED_NAME).equal(ip).field(IPData.CREATION_TIME_FILED_NAME).
-                  greaterThanOrEq(DateUtils.addSeconds(now, interval.getInterval_Seconds()))).asList();
+        if (!ignoreLocalHost && isRequestFromServer(ip))
+            return;
 
-          //Morphia does not support MongoDB aggregation yet.
-          long count = 0;
+        for (Interval interval : Interval.values()) {
+            if (interval == Interval.SECOND) {
+                continue;
+            }
+            List<IPData> asList = ipRepository.find(ipRepository.createQuery().field(IPData.IP_FILED_NAME).equal(ip).field(IPData.CREATION_TIME_FILED_NAME).
+                    greaterThanOrEq(DateUtils.addSeconds(now, interval.getInterval_Seconds()))).asList();
 
-          for (IPData data : asList) {
-              count += data.getCount();
-          }
+            //Morphia does not support MongoDB aggregation yet.
+            long count = 0;
 
-          checkIPData(count, interval);
-      }
+            for (IPData data : asList) {
+                count += data.getCount();
+            }
+
+            checkIPData(count, interval);
+        }
     }
 
+    void setIgnoreLocalHost(boolean ignoreLocalHost) {
+        this.ignoreLocalHost = ignoreLocalHost;
+    }
+
+    private boolean isRequestFromServer(String ip) {
+        return ip.equals(SERVER_IP) || ip.contains(SERVER_IP) ||
+                isRequestFromLocalHost(ip);
+    }
+
+    private boolean isRequestFromLocalHost(String ip) {
+        return ip.equals(LOCAL_HOST_STR) || ip.contains(LOCAL_HOST_STR) ||
+                ip.equals(LOCAL_HOST_IP) || ip.contains(LOCAL_HOST_IP);
+    }
 
     private URLData checkFullUrl(String fullUrl) {
         return urlRepository.findOne(URLData.URL_FILED_NAME, fullUrl);
@@ -124,7 +160,7 @@ public class DBHelper {
 
     private void checkIPData(long count, Interval interval) throws IllegalAccessException {
         if (count > interval.getPermittedNumber()) {
-            throw new IllegalAccessException("Exceeded the "+interval.name()+" query limit. Expect: " + interval.getPermittedNumber());
+            throw new IllegalAccessException("Exceeded the " + interval.name() + " query limit. Expect: " + interval.getPermittedNumber());
         }
     }
 

@@ -77,7 +77,7 @@ public class Server {
         if (url == null || url.length() < 4)
             return null;
         try {
-            new java.net.URL(url);
+            new URL(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return Response.status(500).entity(NOT_VALID_URL).build();
@@ -119,7 +119,7 @@ public class Server {
 
         URLData url = DBHelper.getInstance().getFullUrl(shortUrl);
 
-        if (!url.getPassword().equals(null)) {
+        if (url.getPassword() != null) {
             return REDIRECT_STRING.replace(URL_KEY, PASSWORD_URL);
         }
         if (url == null)

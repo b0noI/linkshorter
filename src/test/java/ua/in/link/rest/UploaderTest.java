@@ -31,7 +31,7 @@ public class UploaderTest extends BaseRestTest{
         String fullUrl = "http://dateme222.in.ua";
         String shortUrl = URLClient.postUrlToRest(fullUrl);
         String fromServer = URLClient.getFullUrl(shortUrl);
-        assertEquals("<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://dateme.in.ua\"></head></html>", fromServer);
+        assertEquals("<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://dateme222.in.ua\"></head></html>", fromServer);
     }
 
     @Test

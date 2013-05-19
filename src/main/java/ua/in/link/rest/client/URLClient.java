@@ -23,27 +23,27 @@ public class URLClient {
 
     private static final Gson GSON = new Gson();
 
-    private static final String POST_URL = RESTSettings.getRestUrl() + "/generateShort";
+    private static final String POST_URL = "/generateShort";
 
-    private static final String POST_NEW_URL = RESTSettings.getRestUrl() + "/rest/postUrl";
+    private static final String POST_NEW_URL =  "/rest/postUrl";
 
-    private static final String GET_URL = RESTSettings.getRestUrl() + "/";
+    private static final String GET_URL = "/";
 
-    private static final String GET_STAT = RESTSettings.getRestUrl() + "/rest/statistic/";
+    private static final String GET_STAT = "/rest/statistic/";
 
     @Deprecated
     public static String postUrl(String fullUrl){
-        return post(POST_URL, fullUrl);
+        return post(RESTSettings.getRestUrl() + POST_URL, fullUrl);
     }
 
     public static String postUrlToRest(String fullUrl){
-        return post(POST_NEW_URL, fullUrl);
+        return post(RESTSettings.getRestUrl() + POST_NEW_URL, fullUrl);
     }
 
     public static String getFullUrl(String shortUrl){
 
         WebResource webResource = CLIENT
-                .resource(GET_URL + shortUrl);
+                .resource(RESTSettings.getRestUrl() + GET_URL + shortUrl);
 
         ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);
@@ -60,7 +60,7 @@ public class URLClient {
     public static List<URLData.DataStat> getStat(String shortUrl){
 
         WebResource webResource = CLIENT
-                .resource(GET_STAT + shortUrl);
+                .resource(RESTSettings.getRestUrl() + GET_STAT + shortUrl);
 
         ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);

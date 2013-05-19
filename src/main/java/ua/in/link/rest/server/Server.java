@@ -73,6 +73,9 @@ public class Server {
         } catch (IllegalAccessException e) {
             return Response.status(Status.FORBIDDEN).entity(e.getMessage()).build();
         }
+
+        if (!url.contains("http"))
+            url = "http://" + url;
         
         if (url == null || url.length() < 4)
             return null;
@@ -82,9 +85,6 @@ public class Server {
             e.printStackTrace();
             return Response.status(500).entity(NOT_VALID_URL).build();
         }
-
-        if (!url.contains("http"))
-            url = "http://" + url;
 
         if (url.substring(0, 16).toLowerCase().equals("http://l.co.ua/"))
             return Response.status(201).entity(url).build();

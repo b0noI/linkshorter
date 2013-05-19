@@ -29,6 +29,8 @@ public class DBHelper {
 
     private static final    String          SERVER_IP               = "89.253.237.43";
 
+    private static final    String          SERVER_IP2               = "188.231.145.181";
+
     private static final    String          LOCAL_HOST_STR          = "localhost";
 
     private static final    String          LOCAL_HOST_IP           = "127.0.0.1";
@@ -146,6 +148,7 @@ public class DBHelper {
 
     private boolean isRequestFromServer(String ip) {
         return ip.equals(SERVER_IP) || ip.contains(SERVER_IP) ||
+                ip.equals(SERVER_IP2) || ip.contains(SERVER_IP2) ||
                 isRequestFromLocalHost(ip);
     }
 

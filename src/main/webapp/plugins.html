@@ -9,7 +9,10 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
+        <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/langugae.js"></script>
 </head>
 <body>
 <script type="text/javascript">
@@ -63,34 +66,6 @@
     }
 </script>
 
-<script type="text/javascript">
-    $(function () {
-        $(".eng").hide();
-        $(".rus").hide();
-
-        $("#eng").click(function () {
-            $(".eng").show();
-            $(".ukr").hide();
-            $(".rus").hide();
-            document.title = 'Shorter';
-        });
-
-        $("#rus").click(function () {
-            $(".eng").hide();
-            $(".ukr").hide();
-            $(".rus").show();
-            document.title = 'Ужиматель';
-        });
-
-        $("#ukr").click(function () {
-            $(".eng").hide();
-            $(".ukr").show();
-            $(".rus").hide();
-            document.title = 'Скорочувальник';
-        });
-    });
-</script>
-
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
@@ -112,31 +87,31 @@
             <div class="nav-collapse collapse">
                 <div class="ukr">
                     <ul class="nav">
-                        <li class="active"><a href="index.html">Домівка</a></li>
+                        <li><a href="index.html">Домівка</a></li>
                         <li><a href="stat.html">Статистика</a></li>
                         <li><a href="rest.html">REST</a></li>
 
-                        <li><a href="plugins.html">Плагіни</a></li>
+                        <li class="active"><a href="plugins.html">Плагіни</a></li>
                         <li><a href="about.html">Про l.co.ua</a></li>
                     </ul>
                 </div>
                 <div class="eng">
                     <ul class="nav">
-                        <li class="active"><a href="index.html">Home</a></li>
+                        <li><a href="index.html">Home</a></li>
                         <li><a href="stat.html">Statistic</a></li>
                         <li><a href="rest.html">REST</a></li>
 
-                        <li><a href="plugins.html">Plugins</a></li>
+                        <li class="active"><a href="plugins.html">Plugins</a></li>
                         <li><a href="about.html">About l.co.ua</a></li>
                     </ul>
                 </div>
                 <div class="rus">
                     <ul class="nav">
-                        <li class="active"><a href="index.html">Дом</a></li>
+                        <li><a href="index.html">Дом</a></li>
                         <li><a href="stat.html">Статистика</a></li>
                         <li><a href="rest.html">REST</a></li>
 
-                        <li><a href="plugins.html">Плагины</a></li>
+                        <li class="active"><a href="plugins.html">Плагины</a></li>
                         <li><a href="about.html">Про l.co.ua</a></li>
                     </ul>
                 </div>

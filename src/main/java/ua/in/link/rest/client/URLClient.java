@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import ua.in.link.db.URL;
+import ua.in.link.db.URLData;
 import ua.in.link.rest.RESTSettings;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,27 +23,27 @@ public class URLClient {
 
     private static final Gson GSON = new Gson();
 
-    private static final String POST_URL = RESTSettings.REST_URL + "/generateShort";
+    private static final String POST_URL = "/generateShort";
 
-    private static final String POST_NEW_URL = RESTSettings.REST_URL + "/rest/postUrl";
+    private static final String POST_NEW_URL =  "/rest/postUrl";
 
-    private static final String GET_URL = RESTSettings.REST_URL + "/";
+    private static final String GET_URL = "/";
 
-    private static final String GET_STAT = RESTSettings.REST_URL + "/rest/statistic/";
+    private static final String GET_STAT = "/rest/statistic/";
 
     @Deprecated
     public static String postUrl(String fullUrl){
-        return post(POST_URL, fullUrl);
+        return post(RESTSettings.getRestUrl() + POST_URL, fullUrl);
     }
 
     public static String postUrlToRest(String fullUrl){
-        return post(POST_NEW_URL, fullUrl);
+        return post(RESTSettings.getRestUrl() + POST_NEW_URL, fullUrl);
     }
 
     public static String getFullUrl(String shortUrl){
 
         WebResource webResource = CLIENT
-                .resource(GET_URL + shortUrl);
+                .resource(RESTSettings.getRestUrl() + GET_URL + shortUrl);
 
         ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);
@@ -56,10 +57,10 @@ public class URLClient {
         return output;
     }
 
-    public static List<URL.DataStat> getStat(String shortUrl){
+    public static List<URLData.DataStat> getStat(String shortUrl){
 
         WebResource webResource = CLIENT
-                .resource(GET_STAT + shortUrl);
+                .resource(RESTSettings.getRestUrl() + GET_STAT + shortUrl);
 
         ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);
@@ -70,7 +71,7 @@ public class URLClient {
         }
 
         String output = response.getEntity(String.class);
-        return GSON.fromJson(output, List.class);
+        return Arrays.asList((URLData.DataStat[])GSON.fromJson(output, URLData.DataStat[].class));
     }
 
     private static String post(String url, String fullUrl){

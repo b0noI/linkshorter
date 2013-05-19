@@ -2,14 +2,17 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Скорочувальник</title>
+    <title>Скорочувальник </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
+        <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/langugae.js"></script>
 </head>
 <body>
 
@@ -54,34 +57,6 @@
 
 </script>
 
-<script type="text/javascript">
-    $(function () {
-        $(".eng").hide();
-        $(".rus").hide();
-
-        $("#eng").click(function () {
-            $(".eng").show();
-            $(".ukr").hide();
-            $(".rus").hide();
-            document.title = 'Shorter';
-        });
-
-        $("#rus").click(function () {
-            $(".eng").hide();
-            $(".ukr").hide();
-            $(".rus").show();
-            document.title = 'Ужиматель';
-        });
-
-        $("#ukr").click(function () {
-            $(".eng").hide();
-            $(".ukr").show();
-            $(".rus").hide();
-            document.title = 'Скорочувальник';
-        });
-    });
-</script>
-
 <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
@@ -101,8 +76,8 @@
             <div class="nav-collapse collapse">
                 <div class="ukr">
                     <ul class="nav">
-                        <li class="active"><a href="index.html">Домівка</a></li>
-                        <li><a href="stat.html">Статистика</a></li>
+                        <li><a href="index.html">Домівка</a></li>
+                        <li class="active"><a href="stat.html">Статистика</a></li>
                         <li><a href="rest.html">REST</a></li>
 
                         <li><a href="plugins.html">Плагіни</a></li>
@@ -111,8 +86,8 @@
                 </div>
                 <div class="eng">
                     <ul class="nav">
-                        <li class="active"><a href="index.html">Home</a></li>
-                        <li><a href="stat.html">Statistic</a></li>
+                        <li><a href="index.html">Home</a></li>
+                        <li class="active"><a href="stat.html">Statistic</a></li>
                         <li><a href="rest.html">REST</a></li>
 
                         <li><a href="plugins.html">Plugins</a></li>
@@ -121,8 +96,8 @@
                 </div>
                 <div class="rus">
                     <ul class="nav">
-                        <li class="active"><a href="index.html">Дом</a></li>
-                        <li><a href="stat.html">Статистика</a></li>
+                        <li><a href="index.html">Дом</a></li>
+                        <li class="active"><a href="stat.html">Статистика</a></li>
                         <li><a href="rest.html">REST</a></li>
 
                         <li><a href="plugins.html">Плагины</a></li>
@@ -150,6 +125,10 @@
         <div class="form-rest">
             <div class="ukr">
                 <h1>Статистика</h1>
+                <div>
+                <p class="alert alert-success" align="center">Щоб отримати статистику переходів по потрібному лінку, 
+                введіть нижче коротку адресу (ключ). Наприклад, для http://l.co.ua/m3q2xt ключ наступний "m3q2xt".</p>
+                </div>
 
                 <input id="code_input" type="text" class="input-medium search-query">
                 <button type="submit" class="btn btn-primary" onclick="showStatistic()">Показати</button>
@@ -174,6 +153,11 @@
             <div class="eng">
                 <h1>Statistic</h1>
 
+                <div>
+                <p class="alert alert-success" align="center">To get conversion statistics on the necessary link
+enter the following short address (key). For example, for the  http://l.co.ua/m3q2xt following key "m3q2xt".</p>
+                 </div>
+
                 <input id="code_input" type="text" class="input-medium search-query">
                 <button type="submit" class="btn btn-primary" onclick="showStatistic()">Show</button>
 
@@ -196,6 +180,10 @@
 
             <div class="rus">
                 <h1>Статистика</h1>
+                <div>
+                <p class="alert alert-success" align="center">Чтобы получить статистику переходов по нужной ссылке,
+                 введите ниже короткий адрес (ключ). Например, для http://l.co.ua/m3q2xt ключ следующий "m3q2xt".</p>
+                </div>
 
                 <input id="code_input" type="text" class="input-medium search-query">
                 <button type="submit" class="btn btn-primary" onclick="showStatistic()">Показать</button>

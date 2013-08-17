@@ -1,6 +1,7 @@
 package ua.in.link.db;
 
-public enum Interval {
+public enum
+        Interval {
 
     SECOND(3, -1),
     MINUTE(10, -1 * 60),

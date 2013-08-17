@@ -2,6 +2,7 @@ package ua.in.link.db;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 
 /**
@@ -29,4 +30,39 @@ public class DBHelperTest {
         System.out.println("it's took a "+ (end - start) +" mil");
         assertNotNull(tester);
     }
+
+    @Test
+    // Check if first generated URLs are 'a', 'b' and 'c'
+    public void testFirstShortURL() {
+        DBHelper tester = DBHelper.getInstance();
+
+        //assumeThat(tester.getFullUrl("a"), nullValue());
+       // assumeThat(tester.getFullUrl("b"), nullValue());
+        //assumeThat(tester.getFullUrl("c"), nullValue());
+
+        String firstShortURLStr = null;
+        String secondShortURLStr = null;
+        String thirdShortURLStr = null;
+
+        try
+        {
+            URLData firstShortURL = tester.getShortUrl("FirstLongURL");
+            firstShortURLStr = firstShortURL.getShortUrl();
+
+            URLData secondShortURL = tester.getShortUrl("SecondLongURL");
+            secondShortURLStr = secondShortURL.getShortUrl();
+
+            URLData thirdShortURL = tester.getShortUrl("ThirdLongURL");
+            thirdShortURLStr = thirdShortURL.getShortUrl();
+
+            assertEquals("a", firstShortURL.getShortUrl());
+            assertEquals("b", secondShortURL.getShortUrl());
+            assertEquals("c", thirdShortURL.getShortUrl());
+        } finally {
+            tester.removeShortUrl(firstShortURLStr);
+            tester.removeShortUrl(secondShortURLStr);
+            tester.removeShortUrl(thirdShortURLStr);
+        }
+    }
+
 }

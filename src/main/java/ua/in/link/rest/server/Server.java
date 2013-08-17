@@ -98,8 +98,7 @@ public class Server {
     @Path("/rest/statistic/{shortUrl}")
     public String getStatistic(@PathParam("shortUrl") String shortUrl) {
 
-        if (shortUrl == null || shortUrl.length() < 4
-                || shortUrl.equals("index.html"))
+        if (shortUrl == null || shortUrl.equals("index.html"))
             return REDIRECT_STRING.replace(URL_KEY, INDEX_URL);
 
         URLData url = DBHelper.getInstance().getFullUrl(shortUrl);
@@ -113,8 +112,7 @@ public class Server {
     public String getLongUrl(@PathParam("shortUrl") String shortUrl,
             @Context HttpServletRequest request) {
 
-        if (shortUrl == null || shortUrl.length() < 4
-                || shortUrl.equals("index.html"))
+        if (shortUrl == null || shortUrl.equals("index.html"))
             return REDIRECT_STRING.replace(URL_KEY, INDEX_URL);
 
         URLData url = DBHelper.getInstance().getFullUrl(shortUrl);

@@ -1,16 +1,10 @@
 package ua.in.link.db;
 
-import java.util.Date;
-import java.util.List;
-
+import com.google.code.morphia.annotations.*;
 import org.bson.types.ObjectId;
 
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Indexed;
-import com.google.code.morphia.annotations.Property;
-import com.google.code.morphia.annotations.Transient;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The url class.

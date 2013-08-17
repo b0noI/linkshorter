@@ -1,14 +1,9 @@
 package ua.in.link.db.ip;
 
-import java.util.Date;
-
+import com.google.code.morphia.annotations.*;
 import org.bson.types.ObjectId;
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Indexed;
-import com.google.code.morphia.annotations.Property;
-import com.google.code.morphia.annotations.Transient;
+import java.util.Date;
 
 /**
  *

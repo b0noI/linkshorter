@@ -1,5 +1,13 @@
 package ua.in.link.db;
 
+import com.google.code.morphia.Morphia;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
+import org.apache.commons.lang.time.DateUtils;
+import ua.in.link.db.ip.IPData;
+import ua.in.link.db.ip.IPRepository;
+
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,17 +15,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
-
-import com.mongodb.MongoException;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.time.DateUtils;
-
-import ua.in.link.db.ip.IPData;
-import ua.in.link.db.ip.IPRepository;
-
-import com.google.code.morphia.Morphia;
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
 
 /**
  * The DB helper.
@@ -48,6 +45,7 @@ public class DBHelper {
     private        final    IPRepository    ipRepository;
 
     private        final    URLRepository   urlRepository;
+    private        final    KeyValueRepository keyValueRepository;
 
     private        final    MongoClient     mongo;
 
@@ -60,6 +58,10 @@ public class DBHelper {
             db.authenticate(IDBSettings.DB_LOGIN, IDBSettings.DB_PASSWORD);
             ipRepository = new IPRepository(mongo, morphia, IDBSettings.DB_NAME);
             urlRepository = new URLRepository(mongo, morphia, IDBSettings.DB_NAME);
+            keyValueRepository = new KeyValueRepository(mongo, morphia, IDBSettings.DB_NAME);
+
+            initNextShortUrl();
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -73,13 +75,23 @@ public class DBHelper {
 
         lock.lock();
         try {
-            URLData url = new URLData(fullUrl, generateNewShort(), new Date(),
+            String newShortURL = generateNewShort();
+            URLData url = new URLData(fullUrl, newShortURL, new Date(),
                     new ArrayList<URLData.DataStat>());
+            saveNewNextURL(NextURLUtils.getNextUrl(newShortURL));
             urlRepository.save(url);
             return url;
         } finally {
             lock.unlock();
         }
+    }
+
+    private void saveNewNextURL(String nextShortURL) {
+        KeyValue keyValue = keyValueRepository.findOne(KeyValue.KEY_FIELD_NAME, KeyValueRepository.NEXT_SHORT_URL_KEY);
+        keyValue.setValue(nextShortURL);
+        keyValueRepository.updateFirst(keyValueRepository.createQuery().field(KeyValue.KEY_FIELD_NAME).equal(KeyValueRepository.NEXT_SHORT_URL_KEY),
+                keyValueRepository.createUpdateOperations().set(KeyValue.VALUE_FIELD_NAME, nextShortURL));
+
     }
 
     public void incrementStatForURL(URLData url, String country, String OS) {
@@ -97,9 +109,20 @@ public class DBHelper {
     }
 
     private String generateNewShort() {
-        String random = RandomStringUtils.random(RANDOM_STRING_LENGTH, true, true);
-        return urlRepository.count(urlRepository.createQuery().field(URLData.SHORT_CODE_FILED_NAME).equal(random)) > 0 ? generateNewShort() : random;
+        KeyValue kv =  keyValueRepository.findOne(KeyValue.KEY_FIELD_NAME, KeyValueRepository.NEXT_SHORT_URL_KEY);
+        String newShortURL = kv.getValue();
+
+        while (containsShortURL(newShortURL)) {
+            newShortURL = NextURLUtils.getNextUrl(newShortURL);
+        }
+
+        return  newShortURL;
     }
+
+    private boolean containsShortURL(String shortURL) {
+        return urlRepository.count(urlRepository.createQuery().field(URLData.SHORT_CODE_FILED_NAME).equal(shortURL)) > 0;
+    }
+
 
     public void checkIP(String ip) throws IllegalAccessException {
         Date now = new Date();
@@ -142,6 +165,23 @@ public class DBHelper {
         }
     }
 
+    public void removeShortUrl(String shortURL) {
+        if (shortURL == null) {
+            return ;
+        }
+
+        URLData urlData = getFullUrl(shortURL);
+        if (urlData != null) {
+            urlRepository.delete(urlData);
+            KeyValue keyValue = keyValueRepository.findOne(KeyValue.KEY_FIELD_NAME, KeyValueRepository.NEXT_SHORT_URL_KEY);
+            String nextURL = keyValue.getValue();
+            if (shortURL.compareTo(nextURL) <= 0) {
+                saveNewNextURL(shortURL);
+            }
+        }
+        //urlRepository.deleteByQuery(urlRepository.createQuery().field(URLData.SHORT_CODE_FILED_NAME).equal(shortURL));
+    }
+
     void setIgnoreLocalHost(boolean ignoreLocalHost) {
         this.ignoreLocalHost = ignoreLocalHost;
     }
@@ -164,6 +204,13 @@ public class DBHelper {
     private void checkIPData(long count, Interval interval) throws IllegalAccessException {
         if (count > interval.getPermittedNumber()) {
             throw new IllegalAccessException("Exceeded the " + interval.name() + " query limit. Expect: " + interval.getPermittedNumber());
+        }
+    }
+    private void initNextShortUrl() {
+        KeyValue keyValue = keyValueRepository.findOne(KeyValue.KEY_FIELD_NAME, KeyValueRepository.NEXT_SHORT_URL_KEY);
+        if (keyValue == null) {
+            keyValue = new KeyValue(KeyValueRepository.NEXT_SHORT_URL_KEY, KeyValueRepository.INIT_SHORT_URL);
+            keyValueRepository.save(keyValue);
         }
     }
 

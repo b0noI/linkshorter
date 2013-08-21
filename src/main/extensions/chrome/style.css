@@ -1,0 +1,29 @@
+html
+{
+    /*height: 100px;*/
+    width:  200px;
+}
+
+body
+{
+    /*height: 100px;*/
+    width:  200px;
+}
+
+div.show_hide
+{
+    display: none;
+}
+
+.center_image
+{
+    margin:auto;
+    display:block;
+}
+
+.error_text
+{
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+

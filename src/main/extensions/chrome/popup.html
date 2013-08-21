@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <title>l.co.ua extension pop-up</title>
+    <style>
+    </style>
+
+      <link rel="stylesheet" type="text/css" href="style.css">
+
+        <script type="text/javascript" src="js/qrcode.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/popup.js"></script>
+  </head>
+  <body>
+
+  <!--
+  <div style="height: 30px;">
+      <div style="float: right;">
+        <img src="img/closeButton.png" width="30" height="30" />
+      </div>
+  </div>
+  -->
+
+  <div id="submitView">
+
+    <input id="privateLinkCheckbox" type="checkbox"/>
+    <span class="checkBoxLabel">Private link</span><br/>
+
+    <div id="passwordBox" class="show_hide">
+      <span class="textBoxLabel">Password</span>
+      <input id="passwordText" type="password" /> <br/>
+      <input id="showPassword" type="checkbox" />
+      <span class="checkBoxLabel">Show password</span><br/>
+    </div>
+
+    <input id="submitButton" type="button" value="Shorten link" />
+
+    <div id="errorHolder" class="show_hide">
+        <span class="error_text">
+            Error: <span id="errorText" ></span>
+        </span>
+    </div>
+  </div>
+
+  <div id="waitingView" class="show_hide">
+    <img src="img/loading.gif" width="50px" height="50px" style="margin:auto; display:block;" />
+  </div>
+
+
+  <div id="resultView" class="show_hide">
+    <input id="shortUrlText" type="text" />
+    <div id="qrHolder" class="center_image">
+
+    </div>
+  </div>
+
+  </body>
+</html>
+

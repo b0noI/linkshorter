@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+
+  "name": "l.co.ua plugin",
+  "description": "Extension to shorten URL using l.co.ua service",
+  "version": "0.2",
+
+  "browser_action": {
+    "default_icon": "img/favicon.png",
+    "default_popup": "popup.html"
+  },
+
+  "permissions": [
+    "http://l.co.ua/",
+    "tabs"
+  ],
+
+  "content_scripts": [
+      {
+        "matches": ["http://www.google.com/*"],
+        "js": ["js/jquery.js"]
+      }
+    ]
+}

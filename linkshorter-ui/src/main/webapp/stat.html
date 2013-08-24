@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Скорочувальник </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+        <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/langugae.js"></script>
+</head>
+<body>
+
+<script language="JavaScript">
+    function showStatistic() {
+        var code = $('#code_input').val();
+        url = '../rest/statistic/' + code;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", url, false);
+        xmlhttp.send();
+        var stat = $.parseJSON(xmlhttp.responseText);
+        var table = $('#table_body');
+        table.empty();
+        table.remove("tr:gt(0)");
+        for (var key in stat) {
+            addRowToTable(table, stat[key]);
+        }
+        $('#table_wrapper').scrollspy();
+    }
+
+    function addRowToTable(table, statElement) {
+        var tr = table.append($("<tr></tr>"));
+        tr.append($("<td></td>").text(statElement["OPEN_DATE"]));
+        tr.append($("<td></td>").text(statElement["COUNTRY"]));
+        tr.append($("<td></td>").text(statElement["OS"]));
+    }
+</script>
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40154085-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <a z-index="1" href="https://github.com/b0noi/linkshorter"><img
+                    style="position: absolute; top: 0; right: 0; border: 0;"
+                    src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
+                    alt="Fork me on GitHub"></a>
+
+            <a class="brand" href="http://l.co.ua"><i>L.co.ua</i></a>
+
+            <div class="nav-collapse collapse">
+                <div class="ukr">
+                    <ul class="nav">
+                        <li><a href="index.html">Домівка</a></li>
+                        <li class="active"><a href="stat.html">Статистика</a></li>
+                        <li><a href="rest.html">REST</a></li>
+
+                        <li><a href="plugins.html">Плагіни</a></li>
+                        <li><a href="about.html">Про l.co.ua</a></li>
+                    </ul>
+                </div>
+                <div class="eng">
+                    <ul class="nav">
+                        <li><a href="index.html">Home</a></li>
+                        <li class="active"><a href="stat.html">Statistic</a></li>
+                        <li><a href="rest.html">REST</a></li>
+
+                        <li><a href="plugins.html">Plugins</a></li>
+                        <li><a href="about.html">About l.co.ua</a></li>
+                    </ul>
+                </div>
+                <div class="rus">
+                    <ul class="nav">
+                        <li><a href="index.html">Дом</a></li>
+                        <li class="active"><a href="stat.html">Статистика</a></li>
+                        <li><a href="rest.html">REST</a></li>
+
+                        <li><a href="plugins.html">Плагины</a></li>
+                        <li><a href="about.html">Про l.co.ua</a></li>
+                    </ul>
+                </div>
+
+                <form class="navbar-form pull-right">
+                    <div class="nav-collapse collapse">
+                        <ul class="nav" id="newNav">
+                            <li><a id="rus" href="#"><img src="img/ru.png"/> </a></li>
+                            <li><a id="ukr" href="#"><img src="img/ua.png"/> </a></li>
+                            <li><a id="eng" href="#"><img src="img/us.png"/> </a></li>
+
+                        </ul>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wrap">
+    <div class="container">
+        <div class="form-rest">
+            <div class="ukr">
+                <h1>Статистика</h1>
+                <div>
+                <p class="alert alert-success" align="center">Щоб отримати статистику переходів по потрібному лінку, 
+                введіть нижче коротку адресу (ключ). Наприклад, для http://l.co.ua/m3q2xt ключ наступний "m3q2xt".</p>
+                </div>
+
+                <input id="code_input" type="text" class="input-medium search-query">
+                <button type="submit" class="btn btn-primary" onclick="showStatistic()">Показати</button>
+
+                <div id="table_wrapper">
+                    <table id="table" class="table table-striped">
+
+                        <thead>
+                        <tr>
+                            <th width="170px">Дата</th>
+                            <th width="70px">Країна</th>
+                            <th>ОС</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table_body">
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="eng">
+                <h1>Statistic</h1>
+
+                <div>
+                <p class="alert alert-success" align="center">To get conversion statistics on the necessary link
+enter the following short address (key). For example, for the  http://l.co.ua/m3q2xt following key "m3q2xt".</p>
+                 </div>
+
+                <input id="code_input" type="text" class="input-medium search-query">
+                <button type="submit" class="btn btn-primary" onclick="showStatistic()">Show</button>
+
+                <div id="table_wrapper">
+                    <table id="table" class="table table-striped">
+
+                        <thead>
+                        <tr>
+                            <th width="170px">Date</th>
+                            <th width="70px">Сountry</th>
+                            <th>ОS</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table_body">
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="rus">
+                <h1>Статистика</h1>
+                <div>
+                <p class="alert alert-success" align="center">Чтобы получить статистику переходов по нужной ссылке,
+                 введите ниже короткий адрес (ключ). Например, для http://l.co.ua/m3q2xt ключ следующий "m3q2xt".</p>
+                </div>
+
+                <input id="code_input" type="text" class="input-medium search-query">
+                <button type="submit" class="btn btn-primary" onclick="showStatistic()">Показать</button>
+
+                <div id="table_wrapper">
+                    <table id="table" class="table table-striped">
+
+                        <thead>
+                        <tr>
+                            <th width="170px">Дата</th>
+                            <th width="70px">Страна</th>
+                            <th>ОС</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table_body">
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<div id="footer">
+    <div class="container">
+        <div id="left">
+            <table align="center">
+                <tr>
+                    <td> Copyright 2013 <a href="http://twitter.com/b0noi">Viacheslav Kovalevskyi</a></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="right">
+
+
+            <table align="center">
+                <tr>
+                    <td>
+                        <script type="text/javascript">(function () {
+                            if (window.pluso) if (typeof window.pluso.start == "function") return;
+                            var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+                            s.type = 'text/javascript';
+                            s.charset = 'UTF-8';
+                            s.async = true;
+                            s.src = ('https:' == d.location.protocol ? 'https' : 'http') + '://share.pluso.ru/pluso-like.js';
+                            var h = d[g]('head')[0] || d[g]('body')[0];
+                            h.appendChild(s);
+                        })();</script>
+                        <div class="pluso" data-options="small,square,line,horizontal,counter,theme=06"
+                             data-services="vkontakte,odnoklassniki,facebook,twitter,google,moimir"
+                             data-background="#ebebeb"></div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

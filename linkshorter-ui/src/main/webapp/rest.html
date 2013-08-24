@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Скорочувальник</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+        <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/langugae.js"></script>
+</head>
+<body>
+
+<script language="JavaScript">
+    var create_qrcode = function (text, typeNumber, errorCorrectLevel, table) {
+
+        var qr = qrcode(typeNumber || 4, errorCorrectLevel || 'M');
+        qr.addData(text);
+        qr.make();
+
+        return qr.createImgTag();
+    };
+
+
+    function postFullUrl() {
+
+        var fullUrl = $('#url').val();
+        $.post(
+                "../generateShort",
+                fullUrl,
+                function (data) {
+                    var url = "http://l.co.ua/" + data;
+                    $('#url').val(url);
+                    $('#url').focus().select();
+
+                    url = url.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+                    $('#qr').remove('current_qr');
+                    $('#qr').append(create_qrcode(url)).attr({"id": "current_qr"});
+
+                },
+                'text'
+        );
+
+
+    }
+</script>
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-40154085-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+            <a z-index="1" href="https://github.com/b0noi/linkshorter"><img
+                    style="position: absolute; top: 0; right: 0; border: 0;"
+                    src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
+                    alt="Fork me on GitHub"></a>
+
+            <a class="brand" href="http://l.co.ua"><i>L.co.ua</i></a>
+
+            <div class="nav-collapse collapse">
+                <div class="ukr">
+                    <ul class="nav">
+                        <li><a href="index.html">Домівка</a></li>
+                        <li><a href="stat.html">Статистика</a></li>
+                        <li class="active"><a href="rest.html">REST</a></li>
+
+                        <li><a href="plugins.html">Плагіни</a></li>
+                        <li><a href="about.html">Про l.co.ua</a></li>
+                    </ul>
+                </div>
+                <div class="eng">
+                    <ul class="nav">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="stat.html">Statistic</a></li>
+                        <li class="active"><a href="rest.html">REST</a></li>
+
+                        <li><a href="plugins.html">Plugins</a></li>
+                        <li><a href="about.html">About l.co.ua</a></li>
+                    </ul>
+                </div>
+                <div class="rus">
+                    <ul class="nav">
+                        <li><a href="index.html">Дом</a></li>
+                        <li><a href="stat.html">Статистика</a></li>
+                        <li class="active"><a href="rest.html">REST</a></li>
+
+                        <li><a href="plugins.html">Плагины</a></li>
+                        <li><a href="about.html">Про l.co.ua</a></li>
+                    </ul>
+                </div>
+
+                <form class="navbar-form pull-right">
+                    <div class="nav-collapse collapse">
+                        <ul class="nav" id="newNav">
+                            <li><a id="rus" href="#"><img src="img/ru.png"/> </a></li>
+                            <li><a id="ukr" href="#"><img src="img/ua.png"/> </a></li>
+                            <li><a id="eng" href="#"><img src="img/us.png"/> </a></li>
+
+                        </ul>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wrap">
+    <div class="container">
+        <div class="form-rest">
+            <h1>REST v. 0.2.1:</h1>
+
+            <h2>post</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/rest/postUrl</dt>
+                        <dd>post long url and get short id</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><strike>http://l.co.ua/generateShort</strike></dt>
+                        <dd>post long url and get short id (<b>DEPRECATED</b>)</dd>
+                    </dl>
+                </li>
+            </ul>
+            <h2>get</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/[id]</dt>
+                        <dd>get redirect html to long url with id</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/rest/statistic/[id]</dt>
+                        <dd>get statistic for id. Statistic is array in JSON format, each field contains information
+                            about: Date, Country and OS
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+            <h2>limits</h2>
+            <ul>
+                <li>
+                    <dl>
+                        max 3 per second;
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        max 20 per minute;
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        max 30 per hour;
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        max 100 per day.
+                    </dl>
+                </li>
+            </ul>
+            <hr>
+            <h1><strike>REST v. 0.2</strike> (@DEPRECATED):</h1>
+
+            <h2>post</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/rest/postUrl</dt>
+                        <dd>post long url and get short id</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt><strike>http://l.co.ua/generateShort</strike></dt>
+                        <dd>post long url and get short id (<b>DEPRECATED</b>)</dd>
+                    </dl>
+                </li>
+            </ul>
+            <h2>get</h2>
+            <ul>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/[id]</dt>
+                        <dd>get redirect html to long url with id</dd>
+                    </dl>
+                </li>
+                <li>
+                    <dl>
+                        <dt>http://l.co.ua/rest/statistic/[id]</dt>
+                        <dd>get statistic for id. Statistic is array in JSON format, each field contains information
+                            about: Date, Country and OS
+                        </dd>
+                    </dl>
+                </li>
+            </ul>
+            <hr>
+            <h1>REST v. 0.1:</h1>
+
+            <h2>post</h2>
+            <dl>
+                <dt>http://l.co.ua/generateShort</dt>
+                <dd>post long url and get short id</dd>
+            </dl>
+            <h2>get</h2>
+            <dl>
+                <dt>http://l.co.ua/[id]</dt>
+                <dd>get redirect html to long url with id</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/qrcode.js"></script>
+<div id="footer">
+    <div class="container">
+        <div id="left">
+            <table align="center">
+                <tr>
+                    <td> Copyright 2013 <a href="http://twitter.com/b0noi">Viacheslav Kovalevskyi</a></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="hidden-phone" id="right">
+
+
+            <table align="center">
+                <tr>
+                    <td>
+                        <script type="text/javascript">(function () {
+                            if (window.pluso) if (typeof window.pluso.start == "function") return;
+                            var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+                            s.type = 'text/javascript';
+                            s.charset = 'UTF-8';
+                            s.async = true;
+                            s.src = ('https:' == d.location.protocol ? 'https' : 'http') + '://share.pluso.ru/pluso-like.js';
+                            var h = d[g]('head')[0] || d[g]('body')[0];
+                            h.appendChild(s);
+                        })();</script>
+                        <div class="pluso" data-options="small,square,line,horizontal,counter,theme=06"
+                             data-services="vkontakte,odnoklassniki,facebook,twitter,google,moimir"
+                             data-background="#ebebeb"></div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

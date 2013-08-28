@@ -7,6 +7,7 @@ import com.sun.jersey.api.client.WebResource;
 import ua.in.link.db.URLData;
 import ua.in.link.rest.RESTSettings;
 
+import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,23 +28,45 @@ public class URLClient {
 
     private static final String POST_NEW_URL =  "/rest/postUrl";
 
+    private static final String POST_PRIVATE_URL =  "/rest/postPrivateUrl";
+
     private static final String GET_URL = "/";
 
     private static final String GET_STAT = "/rest/statistic/";
 
+    private static final String GET_PRIVATE_URL = "/%s/%s";
+
     @Deprecated
     public static String postUrl(String fullUrl){
-        return post(RESTSettings.getRestUrl() + POST_URL, fullUrl);
+        return post(getServerURI(POST_URL), fullUrl);
     }
 
     public static String postUrlToRest(String fullUrl){
-        return post(RESTSettings.getRestUrl() + POST_NEW_URL, fullUrl);
+        return post(getServerURI(POST_NEW_URL), fullUrl);
+    }
+
+    public static String postPrivateUrlToRest(String fullUrl, String password) {
+        String postContent = String.format("{ \"longUrl\" : \"%s\", \"password\" : \"%s\" }",
+                fullUrl, password);
+
+
+        WebResource webResource = CLIENT
+                .resource(getServerURI(POST_PRIVATE_URL));
+
+        //webResource.type(MediaType.APPLICATION_JSON);
+
+        ClientResponse response = webResource
+                .post(ClientResponse.class, postContent);
+
+        String output = response.getEntity(String.class);
+
+        return output;
     }
 
     public static String getFullUrl(String shortUrl){
 
         WebResource webResource = CLIENT
-                .resource(RESTSettings.getRestUrl() + GET_URL + shortUrl);
+                .resource(getServerURI(GET_URL + shortUrl));
 
         ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);
@@ -60,7 +83,7 @@ public class URLClient {
     public static List<URLData.DataStat> getStat(String shortUrl){
 
         WebResource webResource = CLIENT
-                .resource(RESTSettings.getRestUrl() + GET_STAT + shortUrl);
+                .resource(getServerURI(GET_STAT + shortUrl));
 
         ClientResponse response = webResource.accept("application/json")
                 .get(ClientResponse.class);
@@ -91,5 +114,28 @@ public class URLClient {
         System.out.println(output);
         return output;
     }
+
+    private static String getServerURI(String restObject) {
+        return RESTSettings.getRestUrl() + restObject;
+    }
+
+    public static String getPrivateUrl(String shortUrl, String password) {
+        WebResource webResource = CLIENT
+                .resource(getPrivateUrlResourceURI(shortUrl, password));
+
+
+        ClientResponse response = webResource
+                .get(ClientResponse.class);
+
+        String output = response.getEntity(String.class);
+
+        return output;
+    }
+
+    private static String getPrivateUrlResourceURI(String shortUrl, String password) {
+        String resourcePath = String.format(GET_PRIVATE_URL, shortUrl, password);
+        return getServerURI(resourcePath);
+    }
+
 
 }

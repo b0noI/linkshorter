@@ -69,6 +69,10 @@ public class DBHelper {
     }
 
     public URLData getShortUrl(String fullUrl) {
+        return getShortUrl(fullUrl, null);
+    }
+
+    public URLData getShortUrl(String fullUrl, String password) {
         URLData urlFromDB = checkFullUrl(fullUrl);
         if (urlFromDB != null)
             return urlFromDB;
@@ -78,6 +82,9 @@ public class DBHelper {
             String newShortURL = generateNewShort();
             URLData url = new URLData(fullUrl, newShortURL, new Date(),
                     new ArrayList<URLData.DataStat>());
+
+            url.setPassword(password);
+
             saveNewNextURL(NextURLUtils.getNextUrl(newShortURL));
             urlRepository.save(url);
             return url;

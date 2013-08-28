@@ -1,6 +1,5 @@
 package ua.in.link.db;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -19,13 +18,15 @@ import static junit.framework.Assert.assertNotNull;
  */
 public class DBHelperTest {
 
+    DBHelper dbHelper = DBHelper.getInstance();
+
     @Test
     public void testGenerateNewShort() {
         long start, end;
         start = System.currentTimeMillis();
         DBHelper tester = DBHelper.getInstance();
 
-        // String ans = tester.generateNewShort();
+        // String ans = dbHelper.generateNewShort();
         //System.out.println(ans);
 
         end=System.currentTimeMillis();
@@ -35,32 +36,51 @@ public class DBHelperTest {
 
     @Test
     // Check if first generated URLs are 'a', 'b' and 'c'
-    public void testFirstShortURL() {
-        DBHelper tester = DBHelper.getInstance();
+    public void testFirstShortUrl() {
 
         String firstShortURLStr = null;
         String secondShortURLStr = null;
         String thirdShortURLStr = null;
 
-        try
-        {
-            URLData firstShortURL = tester.getShortUrl("FirstLongURL");
+        try {
+            URLData firstShortURL = dbHelper.getShortUrl("FirstLongURL");
             firstShortURLStr = firstShortURL.getShortUrl();
 
-            URLData secondShortURL = tester.getShortUrl("SecondLongURL");
+            URLData secondShortURL = dbHelper.getShortUrl("SecondLongURL");
             secondShortURLStr = secondShortURL.getShortUrl();
 
-            URLData thirdShortURL = tester.getShortUrl("ThirdLongURL");
+            URLData thirdShortURL = dbHelper.getShortUrl("ThirdLongURL");
             thirdShortURLStr = thirdShortURL.getShortUrl();
 
             assertEquals("a", firstShortURL.getShortUrl());
             assertEquals("b", secondShortURL.getShortUrl());
             assertEquals("c", thirdShortURL.getShortUrl());
         } finally {
-            tester.removeShortUrl(firstShortURLStr);
-            tester.removeShortUrl(secondShortURLStr);
-            tester.removeShortUrl(thirdShortURLStr);
+            dbHelper.removeShortUrl(firstShortURLStr);
+            dbHelper.removeShortUrl(secondShortURLStr);
+            dbHelper.removeShortUrl(thirdShortURLStr);
         }
     }
+
+    @Test
+    public void testAddPrivateUtl() {
+        String shortUrl = null;
+
+        try {
+            String fullUrl = "fullUrl";
+            String password = "pwd";
+            URLData urlData = dbHelper.getShortUrl(fullUrl, password);
+
+            shortUrl = urlData.getShortUrl();
+            assertEquals(password, urlData.getPassword());
+
+            URLData actualFullUrl = dbHelper.getFullUrl(shortUrl);
+            assertEquals(fullUrl, actualFullUrl.getOriginalUrl());
+
+        } finally {
+            dbHelper.removeShortUrl(shortUrl);
+        }
+    }
+
 
 }

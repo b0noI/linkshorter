@@ -7,6 +7,7 @@ import ua.in.link.db.URLData;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -67,19 +68,41 @@ public class Server {
 
     @POST
     @Path("/rest/postUrl")
-    public Response postLongUrl(@Context HttpServletRequest request , String url) {
+    public Response postLongUrl(@Context HttpServletRequest request, String url) {
+        PrivateUrl privateUrl = new PrivateUrl();
+        privateUrl.setLongUrl(url);
+        return addPrivateLink(request, privateUrl);
+    }
+
+    private String normalizeUrl(String url) {
+        if (!url.contains("http")) {
+            url = "http://" + url;
+        }
+        return url;
+    }
+
+
+    @POST
+    @Path("/rest/postPrivateUrl")
+    //@Consumes(MediaType.APPLICATION_JSON)
+    public Response postPrivateLongUrl(@Context HttpServletRequest request, String privateUrlJSON) {
+        PrivateUrl privateUrl = new Gson().fromJson(privateUrlJSON, PrivateUrl.class);
+        return addPrivateLink(request, privateUrl);
+    }
+
+    private Response addPrivateLink(HttpServletRequest request, PrivateUrl privateUrl) {
         try {
             DBHelper.getInstance().checkIP(request.getRemoteAddr());
         } catch (IllegalAccessException e) {
             return Response.status(Status.FORBIDDEN).entity(e.getMessage()).build();
         }
 
-        if (!url.contains("http"))
-            url = "http://" + url;
-        
-        if (url == null || url.length() < 4
-                )
+        String url = normalizeUrl(privateUrl.getLongUrl());
+
+        if (url == null || url.length() < 4) {
             return null;
+        }
+
         try {
             new URL(url);
         } catch (MalformedURLException e) {
@@ -90,10 +113,11 @@ public class Server {
         if (url.substring(0, 16).toLowerCase().equals("http://l.co.ua/"))
             return Response.status(201).entity(url).build();
 
-        String shortUrl = DBHelper.getInstance().getShortUrl(url).getShortUrl();
-        
+        String shortUrl = DBHelper.getInstance().getShortUrl(url, privateUrl.getPassword()).getShortUrl();
+
         return Response.status(201).entity(shortUrl).build();
     }
+
 
     @GET
     @Path("/rest/statistic/{shortUrl}")
@@ -138,8 +162,7 @@ public class Server {
                                   @PathParam("password") String password,
                                   @Context HttpServletRequest request) {
 
-        if (shortUrl == null || shortUrl.length() < 4
-                || shortUrl.equals("index.html"))
+        if (shortUrl == null || shortUrl.equals("index.html"))
             return null;
 
         URLData url = DBHelper.getInstance().getFullUrl(shortUrl);

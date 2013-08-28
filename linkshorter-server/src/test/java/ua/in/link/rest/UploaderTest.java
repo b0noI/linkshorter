@@ -8,6 +8,7 @@ import ua.in.link.rest.client.URLClient;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Uploader test.
@@ -86,6 +87,37 @@ public class UploaderTest extends BaseRestTest{
     public void checkCorrectWorkWithLinksFrom1_0() throws Exception {
         String fromServer = URLClient.getFullUrl(SHORT_KEY_1_0_VERSION);
         assertEquals("<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://marketingbuzz.info/pismo-google-pro-iskusstvennye-vxodyashhie-ssylki-celevaya-rassylka-ili-provokaciya-eksperiment.html\"></head></html>", fromServer);
+    }
+
+    @Test
+    public void testPostingPrivateUrl() throws Exception {
+        String shortUrl = null;
+        try {
+            String fullUrl = "http://google.com.ua";
+            String password = "secret";
+            shortUrl = URLClient.postPrivateUrlToRest(fullUrl, password);
+            assertValidShortUrl(shortUrl);
+        } finally {
+            dbHelper.removeShortUrl(shortUrl);
+        }
+    }
+
+    @Test
+    public void testGetPrivateUrlWithCorrectPassword() throws Exception {
+        String shortUrl = null;
+        try {
+            String fullUrl = "http://google.com.ua";
+            String password = "secret";
+            shortUrl = URLClient.postPrivateUrlToRest(fullUrl, password);
+            String fromServer = URLClient.getPrivateUrl(shortUrl, password);
+            assertEquals("<html><head><meta HTTP-EQUIV=\"REFRESH\" content=\"0; url=http://google.com.ua\"></head></html>", fromServer);
+        } finally {
+            dbHelper.removeShortUrl(shortUrl);
+        }
+    }
+
+    private static void assertValidShortUrl(String shortUrl) {
+        assert(shortUrl != null && !shortUrl.isEmpty());
     }
 
 }

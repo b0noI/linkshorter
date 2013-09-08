@@ -10,7 +10,7 @@ body
     width:  200px;
 }
 
-div.show_hide
+div.show-hide
 {
     display: none;
 }

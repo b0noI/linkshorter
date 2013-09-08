@@ -79,7 +79,8 @@ body {
     max-width: 680px;
 }
 
-.form-signin input[type="text"] {
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
     font-size: 16px;
     height: auto;
     margin-bottom: 15px;
@@ -116,6 +117,11 @@ body {
 } 
 .navbar-form {
     margin-right: 10%;
+}
+
+div.show-hide
+{
+    display: none;
 }
 
 

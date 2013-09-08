@@ -6,16 +6,16 @@ package ua.in.link.rest.server;
  */
 public class PrivateUrl {
 
-    private String longUrl;
+    private String url;
 
     private String password;
 
     public String getLongUrl() {
-        return longUrl;
+        return url;
     }
 
     public void setLongUrl(String longUrl) {
-        this.longUrl = longUrl;
+        this.url = longUrl;
     }
 
     public String getPassword() {

@@ -32,7 +32,7 @@ public class Server {
 
     private static final String INDEX_URL = "in/index.html";
 
-    private static final String PASSWORD_URL = "in/password.html";
+    private static final String PASSWORD_URL = "/in/password.html";
 
     private static final String URL_KEY = "###URLData###";
 
@@ -80,7 +80,6 @@ public class Server {
         }
         return url;
     }
-
 
     @POST
     @Path("/rest/postPrivateUrl")
@@ -143,7 +142,7 @@ public class Server {
         URLData url = DBHelper.getInstance().getFullUrl(shortUrl);
 
         if (url.getPassword() != null) {
-            return REDIRECT_STRING.replace(URL_KEY, PASSWORD_URL);
+            return REDIRECT_STRING.replace(URL_KEY, getPasswordUrl(shortUrl, false));
         }
         if (url == null)
             return null;
@@ -154,6 +153,18 @@ public class Server {
         DBHelper.getInstance().incrementStatForURL(url, countryCode,
                 request.getHeader("User-Agent"));
         return REDIRECT_STRING.replace(URL_KEY, url.getOriginalUrl());
+    }
+
+    private String getPasswordUrl(String shortUrl, boolean wrongPassword) {
+        StringBuilder urlBuilder = new StringBuilder(PASSWORD_URL)
+                .append("?url=")
+                .append(shortUrl);
+
+        if (wrongPassword) {
+            urlBuilder.append("&wrongPassword=true");
+        }
+
+        return urlBuilder.toString();
     }
 
     @GET
@@ -180,7 +191,7 @@ public class Server {
                     request.getHeader("User-Agent"));
             return REDIRECT_STRING.replace(URL_KEY, url.getOriginalUrl());
         }else{
-            return REDIRECT_STRING.replace(URL_KEY, PASSWORD_URL);
+            return REDIRECT_STRING.replace(URL_KEY, getPasswordUrl(shortUrl, true));
         }
    }
 

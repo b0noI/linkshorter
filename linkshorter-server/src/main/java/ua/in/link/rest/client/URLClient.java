@@ -46,7 +46,7 @@ public class URLClient {
     }
 
     public static String postPrivateUrlToRest(String fullUrl, String password) {
-        String postContent = String.format("{ \"longUrl\" : \"%s\", \"password\" : \"%s\" }",
+        String postContent = String.format("{ \"url\" : \"%s\", \"password\" : \"%s\" }",
                 fullUrl, password);
 
 

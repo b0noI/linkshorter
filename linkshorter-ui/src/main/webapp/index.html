@@ -34,28 +34,91 @@
 </script>
 
 <script language="JavaScript">
+
+
+
+
     var create_qrcode = function (text, typeNumber, errorCorrectLevel, table) {
         var qr = qrcode(typeNumber || 4, errorCorrectLevel || 'M');
         qr.addData(text);
         qr.make();
         return qr.createImgTag();
     };
-    function postFullUrl() {
+
+    function onShortUrlReceived(data) {
+        var url = "http://l.co.ua/" + data;
+        $('#url').val(url);
+        $('#url').focus().select();
+        url = url.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+        $('#qr').remove('current_qr');
+        $('#qr').append(create_qrcode(url)).attr({"id": "current_qr"});
+    }
+
+    $(document).ready(function () {
+        $('#makePrivateURL').click(function() {
+            if (this.checked) {
+                showPasswordPanel();
+            } else {
+                hidePasswordPanel();
+            }
+        });
+
+        hidePasswordPanel();
+    });
+
+    function showPasswordPanel() {
+        var passwordPanel = $('#passwordPanel');
+        passwordPanel.show();
+    }
+
+    function hidePasswordPanel() {
+        var passwordPanel = $('#passwordPanel');
+        passwordPanel.hide();
+    }
+
+
+    function postUrl() {
         var fullUrl = $('#url').val();
         $.post(
                 "../generateShort",
                 fullUrl,
-                function (data) {
-                    var url = "http://l.co.ua/" + data;
-                    $('#url').val(url);
-                    $('#url').focus().select();
-                    url = url.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-                    $('#qr').remove('current_qr');
-                    $('#qr').append(create_qrcode(url)).attr({"id": "current_qr"});
-                },
+                onShortUrlReceived,
                 'text'
         );
     }
+
+    function postPrivateUrl() {
+        var fullUrlValue = $('#url').val();
+        var passwordValue = $('#password').val();
+
+        var privateUrl = {
+            url : fullUrlValue,
+            password : passwordValue
+        };
+
+        var textJSON = JSON.stringify(privateUrl);
+
+        $.post(
+            "../rest/postPrivateUrl",
+            textJSON,
+            onShortUrlReceived,
+            'text'
+        );
+    }
+
+    function postFullUrl() {
+        if (isPrivateUrl()) {
+            postPrivateUrl();
+        } else {
+            postUrl();
+        }
+
+    }
+
+    function isPrivateUrl() {
+        return $('#makePrivateURL').is(':checked');
+    }
+
 </script>
 
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -136,6 +199,35 @@
             <div class="eng">
                 <input id="url" type="text" class="input-block-level" placeholder="long ugly URL">
             </div>
+
+            <div id="passwordPanel" class="show-hide">
+
+                <div class="ukr">
+                    <input id="password" type="password" class="input-block-level" placeholder="пароль">
+                </div>
+                <div class="rus">
+                    <input id="password" type="password" class="input-block-level" placeholder="пароль">
+                </div>
+                <div class="eng">
+                    <input id="password" type="password" class="input-block-level" placeholder="password">
+                </div>
+
+            </div>
+
+            <label class="checkbox">
+                <input type="checkbox" id="makePrivateURL">
+
+                <div class="ukr">
+                    Приватний URL
+                </div>
+                <div class="rus">
+                    Приватний URL
+                </div>
+                <div class="eng">
+                    Private URL
+                </div>
+
+            </label>
 
             <table align="center">
                 <tr>

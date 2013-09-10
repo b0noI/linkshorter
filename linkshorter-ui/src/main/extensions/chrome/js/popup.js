@@ -5,6 +5,8 @@ var password = "";
 var currentView = null;
 var displayingError = false;
 
+var server = "http://l.co.ua"
+
 var create_qrcode = function (text, typeNumber, errorCorrectLevel, table) {
   var qr = qrcode(typeNumber || 4, errorCorrectLevel || 'M');
   qr.addData(text);
@@ -36,27 +38,31 @@ function displayError(errorText) {
     displayingError = true;
 }
 
+function onShortUrlReceived(data) {
+    if (data) {
+        var url = "http://l.co.ua/" + data;
+        $('#shortUrlText').val(url);
+        $('#shortUrlText').focus().select();
+        url = url.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+
+        var qrHolder = $('#qrHolder');
+        qrHolder.remove('current_qr');
+        qrHolder.append(create_qrcode(url)).attr({"id": "current_qr", "class" : "center_image"});
+
+        showResult();
+    } else {
+        showSubmit();
+        displayError("Unknown error");
+    }
+}
+
+
 function postFullUrl() {
+    var requestUrl = server + "/generateShort"
     $.post(
-        "http://l.co.ua/generateShort",
+        requestUrl,
         fullUrl,
-        function (data) {
-            if (data) {
-                var url = "http://l.co.ua/" + data;
-                $('#shortUrlText').val(url);
-                $('#shortUrlText').focus().select();
-                url = url.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-
-                var qrHolder = $('#qrHolder');
-                qrHolder.remove('current_qr');
-                qrHolder.append(create_qrcode(url)).attr({"id": "current_qr", "class" : "center_image"});
-
-                showResult();
-            } else {
-                showSubmit();
-                displayError("Unknown error");
-            }
-        },
+        onShortUrlReceived,
         'text'
     )
     .error(function(jqXHR, textStatus, errorThrown) {
@@ -68,7 +74,27 @@ function postFullUrl() {
 }
 
 function postPrivateUrl() {
-    alert("Private URL: " + fullUrl + "; psw: " + password);
+
+     var privateUrl = {
+        url : fullUrl,
+        password : password
+    };
+
+     var textJSON = JSON.stringify(privateUrl);
+
+     var requestUrl = server + "/rest/postPrivateUrl"
+     $.post(
+            requestUrl,
+            textJSON,
+            onShortUrlReceived,
+            'text'
+        )
+        .error(function(jqXHR, textStatus, errorThrown) {
+            showSubmit();
+            displayError(errorThrown);
+     });
+
+
     showWaiting();
 }
 

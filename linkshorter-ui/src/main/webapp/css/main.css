@@ -124,4 +124,17 @@ div.show-hide
     display: none;
 }
 
+.version-label
+{
+
+font-weight:bold;
+color:#4F4F4F;
+letter-spacing:0pt;
+word-spacing:1pt;
+font-size:14px;
+text-align:left;
+font-family:arial, helvetica, sans-serif;
+line-height:1;
+
+}
 

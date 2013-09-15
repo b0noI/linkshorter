@@ -4,10 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>ua.in</groupId>
+        <artifactId>link</artifactId>
+        <version>1.0</version>
+    </parent>
+
     <groupId>ua.in</groupId>
-    <artifactId>link</artifactId>
+    <artifactId>linkshorter-ui</artifactId>
     <version>1.0</version>
-    <packaging>pom</packaging>
+    <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,14 +26,7 @@
         </repository>
     </repositories>
 
-<<<<<<< HEAD
-=======
-    <modules>
-        <module>linkshorter-server</module>
-        <module>linkshorter-ui</module>
-    </modules>
 
->>>>>>> 690e89789f0c4d67c20a6f8c718f84abb70ceefa
     <build>
         <plugins>
             <plugin>

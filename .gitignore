@@ -6,6 +6,8 @@
 target/*
 
 .idea
+.DS_Store
 
 *.iml
+*.xpi
 /target

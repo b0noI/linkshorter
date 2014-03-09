@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://lcoua/skin/skin.css" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://lcoua/locale/translations.dtd">
+<overlay id="lcoua" 
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+ <script type="application/javascript"
+   src="chrome://lcoua/content/button.js"/>
+ 
+ <statusbar id="status-bar">
+  <statusbarpanel id="my-panel" label="Lcoua: "  />
+ </statusbar>
+
+ <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton id="lcoua-toolbar-button" 
+        label="l.co.ua;" 
+        oncommand="Button[1]();"
+        tooltiptext="runlcoua;"
+        class="toolbarbutton-1"/>
+ </toolbarpalette>
+</overlay>

@@ -1,7 +1,3 @@
-Button = {
-
-1: function () {
-  alert("Just testing") 
-  },
-
+function handleOnLoad() {
+    var iframe = document.getElementById("lcoua-iframe");
 }

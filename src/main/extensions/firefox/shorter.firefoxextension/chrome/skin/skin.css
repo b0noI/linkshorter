@@ -3,5 +3,9 @@
 }
 
 toolbar[iconsize="small"] #lcoua-toolbar-button {
-  list-style-image: url("chrome://lcoua/skin/16-16.png");
+    list-style-image: url("chrome://lcoua/skin/16-16.png");
+}
+
+#lcoua-toolbar-button dropmarker {
+    display: none;
 }

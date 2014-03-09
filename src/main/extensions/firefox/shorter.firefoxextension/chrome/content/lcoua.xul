@@ -4,20 +4,32 @@
 <overlay id="lcoua" 
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
- <script type="application/javascript"
-   src="chrome://lcoua/content/button.js"/>
+    <script type="application/javascript"
+        src="chrome://lcoua/content/button.js"/>
 
 <!--
  <statusbar id="status-bar">
   <statusbarpanel id="my-panel" label="l.co.ua: "  />
  </statusbar>
 -->
+    <popupset>
+        <menupopup>
+        </menupopup>
+    </popupset>
 
- <toolbarpalette id="BrowserToolbarPalette">
-    <toolbarbutton id="lcoua-toolbar-button" 
-        label="l.co.ua" 
-        oncommand="Button[1]();"
-        tooltiptext="&runlcoua;"
-        class="toolbarbutton-1"/>
- </toolbarpalette>
+    <toolbarpalette id="BrowserToolbarPalette">
+        <toolbarbutton id="lcoua-toolbar-button" label="l.co.ua"
+            tooltiptext="&runlcoua;" type="panel" class="toolbarbutton-1">
+            
+            <panel id="lcoua-panel" type="arrow"
+                noautofocus="true" consumeoutsideclicks="true"
+                noautohide="false" onpopupshowing="handleOnLoad();"
+                level="parent">
+
+                <vbox id="iframeContainerContainer" align="top">
+                    <iframe id="lcoua-iframe" width="100" height="100"/>
+                </vbox>
+            </panel>
+        </toolbarbutton>
+    </toolbarpalette>
 </overlay>

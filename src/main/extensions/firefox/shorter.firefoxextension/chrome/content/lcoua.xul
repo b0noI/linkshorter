@@ -6,16 +6,18 @@
 
  <script type="application/javascript"
    src="chrome://lcoua/content/button.js"/>
- 
+
+<!--
  <statusbar id="status-bar">
-  <statusbarpanel id="my-panel" label="Lcoua: "  />
+  <statusbarpanel id="my-panel" label="l.co.ua: "  />
  </statusbar>
+-->
 
  <toolbarpalette id="BrowserToolbarPalette">
     <toolbarbutton id="lcoua-toolbar-button" 
-        label="l.co.ua;" 
+        label="l.co.ua" 
         oncommand="Button[1]();"
-        tooltiptext="runlcoua;"
+        tooltiptext="&runlcoua;"
         class="toolbarbutton-1"/>
  </toolbarpalette>
 </overlay>

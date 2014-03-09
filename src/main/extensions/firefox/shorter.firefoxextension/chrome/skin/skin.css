@@ -1,7 +1,7 @@
 #lcoua-toolbar-button {
-    list-style-image: url(chrome://lcoua/skin/toolbar-button.png);
+    list-style-image: url(chrome://lcoua/skin/24-24.png);
 }
 
 toolbar[iconsize="small"] #lcoua-toolbar-button {
-  list-style-image: url("chrome://lcoua/skin/toolbar-button-small.png");
+  list-style-image: url("chrome://lcoua/skin/16-16.png");
 }

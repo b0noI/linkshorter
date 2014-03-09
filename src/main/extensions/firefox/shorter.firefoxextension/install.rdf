@@ -20,7 +20,7 @@
    
     <!-- Front End MetaData -->
     <em:name>lcoua</em:name>
-    <em:description>A Lcoua extensions for link shortener</em:description>
+    <em:description>An l.co.ua extensions for link shortener</em:description>
     <em:creator>Andrii Kryzhyk</em:creator>
     <em:homepageURL>http://l.co.ua/</em:homepageURL>
   </Description>      

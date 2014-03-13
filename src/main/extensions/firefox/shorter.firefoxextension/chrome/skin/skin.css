@@ -9,3 +9,7 @@ toolbar[iconsize="small"] #lcoua-toolbar-button {
 #lcoua-toolbar-button dropmarker {
     display: none;
 }
+
+input[type=text] {
+    font-size: 15px;
+}

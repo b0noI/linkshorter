@@ -18,18 +18,22 @@
     </popupset>
 
     <toolbarpalette id="BrowserToolbarPalette">
-        <toolbarbutton id="lcoua-toolbar-button" label="l.co.ua" oncommand="handleOnClick();"
-            tooltiptext="&runlcoua;" type="panel" class="toolbarbutton-1 chromeclass-toolbar-additional">
-            
-            <panel id="lcoua-panel" type="arrow"
-                noautofocus="true" consumeoutsideclicks="true"
-                noautohide="true" onpopupshowing="handleOnLoad();" 
-                level="parent" >
-
-                <vbox id="iframeContainerContainer" align="top"> 
-                    <iframe id="lcoua-iframe" width="100" height="100" src="chrome://lcoua/content/iframe.html" type="chrome" />
-                </vbox> 
-            </panel>
+        <toolbarbutton id="lcoua-toolbar-button" label="l.co.ua" 
+            tooltiptext="&runlcoua;" type="panel" class="toolbarbutton-1 chromeclass-toolbar-additional" popup="lcoua-panel">
         </toolbarbutton>
     </toolbarpalette>
+
+            <popupset>            
+                <panel id="lcoua-panel" type="arrow"
+                    noautofocus="true" consumeoutsideclicks="true"
+                    noautohide="false" onpopupshowing="handleOnLoad();" 
+                    level="parent" >
+    
+                    <vbox id="iframeContainerContainer" align="top"> 
+                        <iframe id="lcoua-iframe" width="120" height="120" src="chrome://lcoua/content/iframe.html" type="chrome" />
+                    </vbox> 
+
+                </panel>
+            </popupset>
+
 </overlay>

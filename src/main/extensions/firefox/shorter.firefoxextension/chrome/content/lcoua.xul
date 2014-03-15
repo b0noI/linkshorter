@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://lcoua/skin/skin.css" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://lcoua/locale/translations.dtd">
+<overlay id="lcoua" 
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script type="application/javascript" src="http://l.co.ua/in/js/qrcode.js"/>
+    <script type="application/javascript"
+        src="chrome://lcoua/content/button.js"/>
+
+
+<!--
+ <statusbar id="status-bar">
+  <statusbarpanel id="my-panel" label="l.co.ua: "  />
+ </statusbar>
+-->
+    <popupset>
+        <menupopup>
+        </menupopup>
+    </popupset>
+
+    <toolbarpalette id="BrowserToolbarPalette">
+        <toolbarbutton id="lcoua-toolbar-button" label="l.co.ua" 
+            tooltiptext="&runlcoua;" type="panel" class="toolbarbutton-1 chromeclass-toolbar-additional" popup="lcoua-panel">
+        </toolbarbutton>
+    </toolbarpalette>
+
+            <popupset>            
+                <panel id="lcoua-panel" type="arrow"
+                    noautofocus="true" consumeoutsideclicks="true"
+                    noautohide="false" onpopupshowing="handleOnLoad();" 
+                    level="parent" >
+    
+                    <vbox id="iframeContainerContainer" align="top"> 
+                        <iframe id="lcoua-iframe" width="110" height="110" src="chrome://lcoua/content/iframe.html" type="chrome" />
+                    </vbox> 
+
+                </panel>
+            </popupset>
+
+</overlay>

@@ -1,0 +1,29 @@
+#lcoua-toolbar-button {
+    list-style-image: url(chrome://lcoua/skin/24-24.png);
+}
+
+toolbar[iconsize="small"] #lcoua-toolbar-button {
+    list-style-image: url("chrome://lcoua/skin/16-16.png");
+}
+
+#lcoua-toolbar-button dropmarker {
+    display: none;
+}
+
+input[type=text] {
+    font-size: 10px;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 2px;
+}
+
+#iframe-body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.textbox { 
+    height: 18px; 
+    width: 108px; 
+    display: block; 
+} 

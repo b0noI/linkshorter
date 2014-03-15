@@ -9,5 +9,4 @@ target/*
 .DS_Store
 
 *.iml
-*.xpi
 /target

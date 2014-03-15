@@ -4,8 +4,10 @@
 <overlay id="lcoua" 
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+    <script type="application/javascript" src="http://l.co.ua/in/js/qrcode.js"/>
     <script type="application/javascript"
         src="chrome://lcoua/content/button.js"/>
+
 
 <!--
  <statusbar id="status-bar">
@@ -30,7 +32,7 @@
                     level="parent" >
     
                     <vbox id="iframeContainerContainer" align="top"> 
-                        <iframe id="lcoua-iframe" width="120" height="120" src="chrome://lcoua/content/iframe.html" type="chrome" />
+                        <iframe id="lcoua-iframe" width="110" height="110" src="chrome://lcoua/content/iframe.html" type="chrome" />
                     </vbox> 
 
                 </panel>

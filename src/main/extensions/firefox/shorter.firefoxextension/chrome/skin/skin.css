@@ -11,5 +11,19 @@ toolbar[iconsize="small"] #lcoua-toolbar-button {
 }
 
 input[type=text] {
-    font-size: 15px;
+    font-size: 10px;
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 2px;
 }
+
+#iframe-body {
+    margin: 0px;
+    padding: 0px;
+}
+
+.textbox { 
+    height: 18px; 
+    width: 108px; 
+    display: block; 
+} 

@@ -23,5 +23,7 @@
     <em:description>An l.co.ua extensions for link shortener</em:description>
     <em:creator>Andrii Kryzhyk</em:creator>
     <em:homepageURL>http://l.co.ua/</em:homepageURL>
+    <em:iconURL>chrome://lcoua/skin/32-32.png</em:iconURL>
+    <em:icon64URL>chrome://lcoua/skin/64-64.png</em:icon64URL>
   </Description>      
 </RDF>
